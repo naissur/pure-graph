@@ -1,0 +1,64 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "indent": [2, 2, {"SwitchCase": 1}],
+    "spaced-comment": 0,
+    "comma-dangle": [2, "never"],
+    "react/no-multi-comp": 0,
+    "react/prop-types": 0,
+    "react/sort-comp": 0,
+    "react/no-did-mount-set-state": 0,
+    "jsx-quotes": [2, "prefer-single"],
+    "block-scoped-var": 0,
+    "padded-blocks": 0,
+    "no-console": 0,
+    "no-shadow": 2,
+    "no-process-exit": 0,
+    "id-length": 0,
+    "no-new": 0,
+    "no-undef": 2,
+    "no-unused-vars": 2,
+    "no-redeclare": 2,
+    "camelcase": [2, {"properties": "always"}],
+
+    "babel/generator-star-spacing": [2, "after"],
+    "babel/new-cap": 2,
+    "babel/object-curly-spacing": [0, "always"],
+    "babel/object-shorthand": 2,
+    "babel/arrow-parens": [2, "as-needed"]
+  },
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "binaryLiterals": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "forOf": true,
+    "generators": true,
+    "modules": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralDuplicateProperties": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "octalLiterals": true,
+    "regexUFlag": true,
+    "regexYFlag": true,
+    "restParams": true,
+    "spread": true,
+    "superInFunctions": true,
+    "templateStrings": true,
+    "unicodeCodePointEscapes": true,
+    "globalReturn": true,
+    "jsx": true,
+    "experimentalObjectRestSpread": true
+  },
+  "plugins": [
+    "babel"
+  ]
+}
+

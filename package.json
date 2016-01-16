@@ -1,0 +1,58 @@
+{
+  "name": "pure-graph",
+  "version": "0.0.1",
+  "description": "Generator runner with support for custom yield transformations",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf lib",
+    "precompile": "npm run clean",
+    "compile": "babel src/ -d lib",
+    "precompile:sourcemaps": "npm run clean",
+    "compile:sourcemaps": "babel --source-maps inline src/ -d lib",
+    "dev": "npm run test:watch & ./node_modules/.bin/babel -w --presets es2015 src/ -d lib",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "tap 'lib/**/*.spec.js'",
+    "precoverage": "npm run compile:sourcemaps",
+    "coverage": "tap --cov 'lib/**/*.spec.js'",
+    "test:watch": "nodemon --watch lib -q -x \"tap 'lib/**/*.spec.js'\"",
+    "lint": "eslint -c .eslintrc src/**"
+  },
+  "author": "Naissur <vlad.aituganov@gmail.com>",
+  "license": "ISC",
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "dependencies": {
+    "is": "3.1.0",
+    "ramda": "0.19.1",
+    "xtend": "4.0.1"
+  },
+  "devDependencies": {
+    "babel-polyfill": "6.3.14",
+    "babel-preset-es2015": "6.3.13",
+    "babel-preset-stage-0": "6.3.13",
+    "babel-register": "6.3.13",
+    "eslint": "1.10.3",
+    "eslint-config-airbnb": "3.0.0",
+    "eslint-plugin-babel": "3.0.0",
+    "assert": "1.3.0",
+    "babel-cli": "6.4.0",
+    "coveralls": "2.11.6",
+    "faucet": "0.0.1",
+    "jsverify": "0.7.1",
+    "tap": "5.0.1"
+  },
+  "keywords": [
+    "graph",
+    "directed",
+    "pure",
+    "data",
+    "object"
+  ],
+  "nyc": {
+    "exclude": [
+      "**/*.spec.js"
+    ]
+  }
+}
