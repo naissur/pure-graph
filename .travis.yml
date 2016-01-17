@@ -7,4 +7,3 @@ node_js:
 script: 
 - "npm build"
 - "npm run coverage"
-# after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
