@@ -127,3 +127,34 @@ test(`edges removeEdge doesn't throw error when the edge doesn't exist, and retu
 
   t.end();
 });
+
+
+test(`edges removeEdge: removeEdge after addEdge leaves the graph the same`, t => {
+  const startId = '0';
+  const endId = '1';
+
+  const result = compose(
+    removeEdge(startId, endId),
+    addEdge(startId, endId)
+  )(TEST_GRAPH);
+
+  t.deepEqual(result, TEST_GRAPH, 'ok');
+
+  t.end();
+});
+
+
+test(`edges removeEdge: hasEdge returns false after removeEdge has been invoked`, t => {
+  const startId = '0';
+  const endId = '1';
+
+  const added = addEdge(startId, endId, TEST_GRAPH);
+  const removed = removeEdge(startId, endId, added);
+
+  t.deepEqual(hasEdge(startId, endId, added), true);
+  t.deepEqual(hasEdge(startId, endId, removed), false);
+
+  t.end();
+});
+
+

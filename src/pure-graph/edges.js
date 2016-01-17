@@ -10,11 +10,11 @@ export const addEdge = curry((startNodeId, endNodeId, graph) => {
   if (!hasStart) { throw `addEdge: node ${startNodeId} does not exist`; }
   if (!hasEnd) { throw `addEdge: node ${endNodeId} does not exist`; }
 
-  const toAdd = {
+  const toExtend = {
     edges: graph.edges.concat({start: startNodeId, end: endNodeId})
   };
 
-  return xtend({}, graph, toAdd);
+  return xtend({}, graph, toExtend);
 });
 
 
@@ -25,5 +25,13 @@ export const hasEdge = curry((startNodeId, endNodeId, graph) => {
 
 
 export const removeEdge = curry((startNodeId, endNodeId, graph) => {
-  return graph;
+  const toExtend = {
+    edges: graph.edges.filter(edge => (
+      edge.start !== startNodeId &&
+      edge.end !== endNodeId
+    ))
+  };
+
+  return xtend({}, graph, toExtend);
 });
+
