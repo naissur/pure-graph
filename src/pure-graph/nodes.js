@@ -7,17 +7,14 @@ export const addNode = curry((nodeId, nodeData, graph) => {
 
   const newNodeIds = graph.nodeIds.concat(nodeId);
 
-  const toAdd = {
-    nodeIds: newNodeIds,
-    nodes: {
-      [nodeId]: {
-        id: nodeId,
-        data: nodeData
-      }
-    }
-  };
+  const extendedNodesData = xtend({}, graph.nodes, {
+    [nodeId]: { id: nodeId, data: nodeData }
+  });
 
-  return xtend({}, graph, toAdd);
+  return xtend({}, graph, {
+    nodeIds: newNodeIds, 
+    nodes: extendedNodesData
+  });
 });
 
 export const getNode = curry((nodeId, graph) => {

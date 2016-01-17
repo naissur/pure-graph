@@ -42,14 +42,22 @@ test(`nodes export a 'getNode' function`, t => {
 });
 
 
-test(`nodes getNode gets the previously added node, as an object with the correct shape`, t => {
-  const testId = '13';
-  const testData = {a: 1, b: 2};
-  const added = addNode(testId, testData, EMPTY_GRAPH);
+test(`nodes getNode gets the previously added nodes, as an object with the correct shape`, t => {
+  const startId = '13';
+  const endId = '14';
+  const startData = {a: 1, b: 2};
+  const endData = {a: 3, b: 4};
 
-  const got = getNode(testId, added);
+  const added = compose(
+    addNode(startId, startData),
+    addNode(endId, endData)
+  )(EMPTY_GRAPH);
 
-  t.deepEqual(got, { id: testId, data: testData });
+  const gotStart = getNode(startId, added);
+  const gotEnd = getNode(endId, added);
+
+  t.deepEqual(gotStart, { id: startId, data: startData });
+  t.deepEqual(gotEnd, { id: endId, data: endData });
   t.end();
 });
 
