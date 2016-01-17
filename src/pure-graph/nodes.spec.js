@@ -1,5 +1,5 @@
 import {test} from 'tap';
-import {addNode, getNode, removeNode, hasNode} from './nodes';
+import {addNode, getNode, removeNode, hasNode, mapNodeData, setNodeData} from './nodes';
 import {EMPTY_GRAPH} from './empty';
 import is from 'is';
 import {compose} from 'ramda';
@@ -68,7 +68,7 @@ test(`nodes getNode throws an error when the graph is invalid, correctly`, t => 
     getNode(testId, []);
     t.fail('must have thrown');
   } catch (e) {
-    t.equal(e, 'getNode: got an invalid graph');
+    t.equal(e.message, 'getNode: got an invalid graph');
     t.pass('passed');
   }
 
@@ -82,7 +82,7 @@ test(`nodes getNode throws an error when the node doesn't exist, with the correc
     getNode(testId, EMPTY_GRAPH);
     t.fail('must have thrown');
   } catch (e) {
-    t.equal(e, `getNode: no node with the id ${testId}`);
+    t.equal(e.message, `getNode: no node with the id ${testId}`);
     t.pass('passed');
   }
 
@@ -110,6 +110,7 @@ test(`nodes removeNode(x) after addNode(x) returns the same graph`, t => {
   t.deepEqual(afterRemoved, EMPTY_GRAPH);
   t.end();
 });
+
 
 test(`nodes removeNode doesn't throw error when the node doesn't exist, and returns the same graph`, t => {
   const testId = 'testId';
@@ -145,6 +146,7 @@ test(`nodes hasNode returns false on an EMPTY_GRAPH`, t => {
   t.end();
 });
 
+
 test(`nodes hasNode returns true after a node has been added`, t => {
   const testId = '13';
   const testData = {a: 1, b: 2};
@@ -173,4 +175,91 @@ test(`nodes hasNode returns false after a node has been added and then removed`,
 
 
 
+// ==================== //
+// =     map node     = //
+// ==================== //
 
+
+test(`nodes export a mapNodeData function`, t => {
+  t.equal(is.fn(mapNodeData), true);
+  t.end();
+})
+
+
+test(`nodes mapNodeData maps a passed function to the given node data`, t => {
+  const testId = '13';
+  const testData = {a: 1, b: 2};
+  const testDataMapFn = data => (data.a + data.b);
+  const testGraph = addNode(testId, testData, EMPTY_GRAPH);
+
+  const result = compose(
+    getNode(testId),
+    mapNodeData(testId, testDataMapFn)
+  )(testGraph);
+
+  t.equal(result.data, 3, 'mapping function gets applied correctly');
+  t.end();
+})
+
+
+test(`nodes mapNodeData returns the same graph if node doesn't exist`, t => {
+  const testId = '13';
+  const testDataMapFn = data => (data.a + data.b);
+  const initialGraph = EMPTY_GRAPH;
+
+  const result = mapNodeData(testId, testDataMapFn, initialGraph);
+
+  t.equal(result, initialGraph, 'mapping function makes no changes');
+  t.end();
+})
+
+
+
+// ==================== //
+// =     set node     = //
+// ==================== //
+
+
+test(`nodes export an 'setNodeData' function`, t => {
+  t.equal(is.fn(setNodeData), true);
+  t.end();
+});
+
+test(`nodes setNodeData throws a correct error when the node doesn't exist`, t => {
+  const testId = '13';
+
+  try {
+    setNodeData(testId, 'nodeData', EMPTY_GRAPH);
+    t.fail('expected to throw');
+  } catch (e) {
+    t.equal(e.message, `setNodeData: node with id ${testId} doesn't exist`);
+  }
+
+  t.end();
+});
+
+
+test(`nodes setNodeData sets the node data`, t => {
+  const testId = '13';
+  const testData = {a: 1, b: 2};
+  const testGraph = addNode(testId, null, EMPTY_GRAPH);
+
+  const setNodeGraph = setNodeData(testId, testData, testGraph);
+
+  t.deepEqual(getNode(testId, setNodeGraph).data, testData, 'data gets set correctly');
+  t.end();
+})
+
+
+/*
+
+test(`nodes addNode returns the same structure when applied once and twice to the empty graph with the same params`, t => {
+  const once = addNode('13', 'nodeData', EMPTY_GRAPH );
+  const twice = addNode('13', 'nodeData', once );
+
+  t.deepEqual(once, twice);
+  t.end();
+});
+
+
+*/

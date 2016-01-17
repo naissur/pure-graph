@@ -31,7 +31,7 @@ test(`edges addEdge applied to EMPTY_GRAPH results in a 'nodes [...] do not exis
     addEdge(testStart, testEnd, EMPTY_GRAPH);
     t.fail('expected to fail');
   } catch (e) {
-    t.equal(e, `addEdge: nodes ${testStart} and ${testEnd} do not exist`);
+    t.equal(e.message, `addEdge: nodes ${testStart} and ${testEnd} do not exist`);
   }
 
   t.end();
@@ -47,7 +47,7 @@ test(`edges addEdge fails with correct error if the start node does not exist`, 
     addEdge(testStart, testEnd, added);
     t.fail('expected to fail');
   } catch (e) {
-    t.equal(e, `addEdge: node ${testStart} does not exist`);
+    t.equal(e.message, `addEdge: node ${testStart} does not exist`);
   }
 
   t.end();
@@ -64,7 +64,7 @@ test(`edges addEdge fails with correct error if the end node does not exist`, t 
     addEdge(testStart, testEnd, added);
     t.fail('expected to fail');
   } catch (e) {
-    t.equal(e, `addEdge: node ${testEnd} does not exist`);
+    t.equal(e.message, `addEdge: node ${testEnd} does not exist`);
   }
 
   t.end();

@@ -67,13 +67,17 @@ Adds a node with `NodeId` id and `NodeData` data. `NodeId` and `NodeData` can be
 
 Gets a `NodeId` node data from a graph. Throws an error if the node has not been found.
 
+##### mapNodeData : NodeId -> (NodeData -> NodeData) -> GraphData -> NodeData
+
+Transforms a node's data by applying mapping function. Returns an unmodified graph if the node hasn't been found.
+
 ##### hasNode : NodeId -> GraphData -> Boolean
 
 ...
 
 #### removeNode : NodeId -> GraphData -> GraphData
 
-Removes a node with `NodeId` id from the graph. Doesn't throw error if the node hasn't been found.
+Removes a node with `NodeId` id from the graph. Returns an unmodified graph if the node hasn't been found.
 
 
 ## Edges
@@ -82,11 +86,9 @@ Removes a node with `NodeId` id from the graph. Doesn't throw error if the node 
 
 Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
 
-
 ##### hasEdge: NodeId -> NodeId -> GraphData -> Boolean
 
 ...
-
 
 ##### removeEdge : NodeId -> NodeId -> GraphData -> GraphData
 

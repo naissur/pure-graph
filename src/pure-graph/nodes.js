@@ -7,13 +7,13 @@ export const addNode = curry((nodeId, nodeData, graph) => {
 
   const newNodeIds = graph.nodeIds.concat(nodeId);
 
-  const extendedNodesData = xtend({}, graph.nodes, {
+  const transformedNodesData = xtend({}, graph.nodes, {
     [nodeId]: { id: nodeId, data: nodeData }
   });
 
   return xtend({}, graph, {
     nodeIds: newNodeIds, 
-    nodes: extendedNodesData
+    nodes: transformedNodesData
   });
 });
 
@@ -23,11 +23,11 @@ export const getNode = curry((nodeId, graph) => {
   try {
     node = graph.nodes[nodeId];
   } catch (e) {
-    throw 'getNode: got an invalid graph';
+    throw new Error('getNode: got an invalid graph');
   }
 
   if (!is.defined(node)) {
-    throw `getNode: no node with the id ${nodeId}`;
+    throw new Error(`getNode: no node with the id ${nodeId}`);
   }
 
   return node;
@@ -41,6 +41,23 @@ export const removeNode = curry((nodeId, graph) => {
 
 export const hasNode = curry( (nodeId, graph) => {
   return contains(nodeId, graph.nodeIds);
+});
+
+export const mapNodeData = curry( (nodeId, fn, graph) => {
+  if (!hasNode(nodeId, graph)) { return graph; }
+
+  const node = graph.nodes[nodeId];
+  const transformedNodesData = xtend({}, graph.nodes, {
+    [nodeId]: xtend({}, node, {data: fn(node.data)})
+  });
+
+  return xtend({}, graph, { nodes: transformedNodesData });
+});
+
+export const setNodeData = curry( (nodeId, data, graph) => {
+  if (!hasNode(nodeId, graph)) throw new Error(`setNodeData: node with id ${nodeId} doesn't exist`);
+
+  return mapNodeData(nodeId, () => data, graph);
 });
 
 
