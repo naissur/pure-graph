@@ -18,10 +18,10 @@ import g from 'pure-graph';
 import _ from 'ramda';
 import assert from 'assert';
 
-const empty = g.EMPTY_GRAPH;    // initialize an empty graph
+const empty = g.EMPTY_GRAPH;        // initialize an empty graph
   
-const testGraph = _.compose(    // add nodes with '0' and '1' id's, and an edge between them (composition from ramda is in reversed order)
-  g.addEdge('0', '1'),
+const testGraph = _.compose(        // add nodes with '0' and '1' id's, and an edge between them
+  g.addEdge('0', '1'),              // (composed functions are applied from the last to the first)
   g.addNode('1', {x: 30, y: 40}),
   g.addNode('0', {x: 10, y: 20})
 )(empty);
