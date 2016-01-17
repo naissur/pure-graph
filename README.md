@@ -41,7 +41,7 @@ assert(!g.hasEdge('2', '1', testGraph), `doesn't have an edge from node '2' to n
 try {
   g.getNode('3', testGraph);    
 } catch (e) {
-  assert.equal(e, 'getNode: no node with the id 3');
+  assert.equal(e.message, 'getNode: no node with the id 3');
 }
 
 ```
