@@ -1,7 +1,7 @@
 {
   "name": "pure-graph",
   "version": "0.0.1",
-  "description": "Generator runner with support for custom yield transformations",
+  "description": "Simple library for working with directed graphs",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf lib",
