@@ -1,6 +1,6 @@
 import {test} from 'tap';
 // import {addNode, getNode, removeNode, hasNode} from './nodes';
-import {addNode, getNode, removeNode, hasNode, addEdge, hasEdge, removeEdge, EMPTY_GRAPH} from '.';
+import {addNode, getNode, removeNode, hasNode, addEdge, hasEdge, removeEdge, EMPTY_GRAPH} from './index.js';
 import {compose} from 'ramda';
 
 
