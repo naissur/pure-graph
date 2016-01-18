@@ -1,6 +1,6 @@
 {
   "name": "pure-graph",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple library for working with directed graphs",
   "main": "index.js",
   "scripts": {
