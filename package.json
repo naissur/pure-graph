@@ -42,6 +42,10 @@
     "jsverify": "0.7.1",
     "tap": "5.0.1"
   },
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/Naissur/pure-graph.git"
+  },
   "keywords": [
     "graph",
     "directed",
