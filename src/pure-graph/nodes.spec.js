@@ -1,5 +1,5 @@
 import {test} from 'tap';
-import {addNode, getNode, removeNode, hasNode, mapNodeData, setNodeData} from './nodes';
+import {addNode, getNode, removeNode, hasNode, mapNodeData, setNodeData, getNodes, mapNodes} from './nodes';
 import {EMPTY_GRAPH} from './empty';
 import is from 'is';
 import {compose} from 'ramda';
@@ -215,9 +215,9 @@ test(`nodes mapNodeData returns the same graph if node doesn't exist`, t => {
 
 
 
-// ==================== //
-// =     set node     = //
-// ==================== //
+// ===================== //
+// =   set node data   = //
+// ===================== //
 
 
 test(`nodes export an 'setNodeData' function`, t => {
@@ -251,15 +251,73 @@ test(`nodes setNodeData sets the node data`, t => {
 })
 
 
-/*
+// ==================== //
+// =    get nodes     = //
+// ==================== //
 
-test(`nodes addNode returns the same structure when applied once and twice to the empty graph with the same params`, t => {
-  const once = addNode('13', 'nodeData', EMPTY_GRAPH );
-  const twice = addNode('13', 'nodeData', once );
 
-  t.deepEqual(once, twice);
+test(`nodes export an 'getNodes' function`, t => {
+  t.equal(is.fn(getNodes), true);
+  t.end();
+});
+
+test(`nodes getNodes on an empty graph returns []`, t => {
+  t.deepEqual(getNodes(EMPTY_GRAPH), [], 'ok');
+  t.end();
+});
+
+test(`nodes getNodes gets the nodes from the graph`, t => {
+  const testData = [
+    [1, 2], [3, 4], [5, 6], [7, 8]
+  ];
+  const testGraph = compose(
+    ...(testData.map(
+      ( [x, y], index) => addNode(index.toString(), {x, y})
+    ))
+  )(EMPTY_GRAPH);
+
+
+  const result = getNodes(testGraph);
+
+
+  const expected = testData.map( ( [x, y], index) => ({id: index, data: {x, y}}) );
+  t.deepEqual(result, expected);
   t.end();
 });
 
 
-*/
+
+
+// ==================== //
+// =     map nodes    = //
+// ==================== //
+
+
+test(`nodes export an 'mapNodes' function`, t => {
+  t.equal(is.fn(mapNodes), true);
+  t.end();
+});
+
+test(`nodes mapNodes maps the node data`, t => {
+  const testData = [
+    [1, 2], [3, 4], [5, 6], [7, 8]
+  ];
+  const testGraph = compose(
+    ...(testData.map(
+      ( [x, y], index) => addNode(index.toString(), {x, y})
+    ))
+  )(EMPTY_GRAPH);
+
+
+  const result = compose(
+    nodes => nodes.map(n => n.data),
+    getNodes,
+    mapNodes( ({x, y}) => [x, y] )
+  )(testGraph);
+
+
+  t.deepEqual(result, testData);
+  t.end();
+});
+
+

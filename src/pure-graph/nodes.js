@@ -1,5 +1,5 @@
 import xtend from 'xtend';
-import {curry, dissocPath, contains} from 'ramda';
+import {curry, dissocPath, contains, mapObjIndexed, values} from 'ramda';
 import is from 'is';
 
 export const addNode = curry((nodeId, nodeData, graph) => {
@@ -60,4 +60,17 @@ export const setNodeData = curry( (nodeId, data, graph) => {
   return mapNodeData(nodeId, () => data, graph);
 });
 
+export const mapNodes = curry( (fn, graph) => {
+  const newNodes = 
+    mapObjIndexed( ({data, id}) => ({
+      id, data: fn(data, id)
+    }), graph.nodes);
+
+  return xtend({}, graph, {nodes: newNodes});
+});
+
+
+export const getNodes = curry( graph => (
+  values(graph.nodes)
+));
 

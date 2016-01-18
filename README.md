@@ -32,6 +32,9 @@ assert(g.hasNode('1', testGraph), 'an end node has been added');
 assert.deepEqual(g.getNode('0', testGraph).data, {x: 10, y: 20}, 'start node data has been stored');
 assert.deepEqual(g.getNode('1', testGraph).data, {x: 30, y: 40}, 'end node data has been stored');
 
+assert.deepEqual(g.getNodes(testGraph), [ {id: '0', data: {x: 10, y: 20}}, {id: '1', data: {x: 30, y: 40}} ], 'gets a nodes array');
+
+
 assert(g.hasEdge('0', '1', testGraph), 'has an edge from start node to end node');
 assert(!g.hasEdge('2', '1', testGraph), `doesn't have an edge from node '2' to node '1'`);
 
@@ -52,49 +55,58 @@ try {
 
 ## Utils
 
-##### EMPTY_GRAPH: GraphData
+#### `EMPTY_GRAPH: GraphData`
 
 An empty graph constant.
 
 ## Nodes
 
-#### addNode : NodeId -> NodeData -> GraphData -> GraphData
+#### `addNode : NodeId -> NodeData -> GraphData -> GraphData`
 
 Adds a node with `NodeId` id and `NodeData` data. `NodeId` and `NodeData` can be of any js types.
 
 
-#### getNode : NodeId -> GraphData -> NodeData
+#### `getNode : NodeId -> GraphData -> NodeData`
 
 Gets a `NodeId` node data from a graph. Throws an error if the node has not been found.
 
-#### mapNodeData : NodeId -> (NodeData -> NodeData) -> GraphData -> NodeData
+#### `mapNodeData : NodeId -> (NodeData -> NodeData) -> GraphData -> NodeData`
 
-Transforms a node's data by applying mapping function. Returns an unmodified graph if the node hasn't been found.
+Transforms a node's data by mapping. Returns an unmodified graph if the node hasn't been found.
 
-#### setNodeData : NodeId -> NodeData -> GraphData -> GraphData
+#### `setNodeData : NodeId -> NodeData -> GraphData -> GraphData`
 
 Sets node data. Throws an error if the node has not been found.
 
-#### hasNode : NodeId -> GraphData -> Boolean
+#### `hasNode : NodeId -> GraphData -> Boolean`
 
 ...
 
-#### removeNode : NodeId -> GraphData -> GraphData
+#### `removeNode : NodeId -> GraphData -> GraphData`
 
 Removes a node with `NodeId` id from the graph. Returns an unmodified graph if the node hasn't been found.
 
 
+#### `mapNodes : ( NodeData -> NodeId -> NodeData) -> GraphData -> GraphData`
+
+Transforms the nodes' data by mapping.
+
+#### `getNodes : GraphData -> [ {id: NodeId, data: NodeData} ]`
+
+Gets an array of graph nodes.
+
+
 ## Edges
 
-#### addEdge : NodeId -> NodeId -> GraphData -> GraphData
+#### `addEdge : NodeId -> NodeId -> GraphData -> GraphData`
 
 Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
 
-#### hasEdge: NodeId -> NodeId -> GraphData -> Boolean
+#### `hasEdge: NodeId -> NodeId -> GraphData -> Boolean`
 
 ...
 
-#### removeEdge : NodeId -> NodeId -> GraphData -> GraphData
+#### `removeEdge : NodeId -> NodeId -> GraphData -> GraphData`
 
 Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.
 
