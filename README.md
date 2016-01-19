@@ -141,6 +141,6 @@ Removes the edge between nodes with the given id's. If any of the nodes has not 
 
 #### `getEdges : GraphData -> [ {from: NodeId, to: NodeId} ]`
 
-Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
+Gets an array of graph edges.
 
 
