@@ -66,10 +66,16 @@ try {
 
 ```
 
-# Developing
+# Installing
+
+`npm i pure-graph`
+
+# Development
 
 `npm run build` builds
-`npm test` builds the code and runs the tests *on the code being published(/lib)*
+
+`npm test` builds the code and runs the tests **on the code being published** (/lib folder)
+
 `npm run dev` starts a files watching builder and test runner
 
 
@@ -125,7 +131,7 @@ Gets an array of graph nodes.
 
 Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
 
-#### `hasEdge: NodeId -> NodeId -> GraphData -> Boolean`
+#### `hasEdge : NodeId -> NodeId -> GraphData -> Boolean`
 
 ...
 
