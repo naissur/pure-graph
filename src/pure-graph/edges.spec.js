@@ -1,5 +1,5 @@
 import {test} from 'tap';
-import {addEdge, hasEdge, removeEdge} from './edges';
+import {addEdge, hasEdge, removeEdge, getEdges} from './edges';
 import {addNode} from './nodes';
 import is from 'is';
 import {EMPTY_GRAPH} from './empty';
@@ -157,4 +157,44 @@ test(`edges removeEdge: hasEdge returns false after removeEdge has been invoked`
   t.end();
 });
 
+
+
+// ==================== //
+// =    get edges     = //
+// ==================== //
+
+
+test(`edges export a getEdges() function`, t => {
+  t.equal(is.fn(getEdges), true);
+  t.end();
+});
+
+test(`edges getEdges return [] for an empty graph`, t => {
+  t.deepEqual(getEdges(EMPTY_GRAPH), []);
+  t.end();
+});
+
+
+test(`edges getEdges gets the edges from the graph`, t => {
+  const testGraph = compose(
+    addEdge('3', '0'),
+    addEdge('2', '3'),
+    addEdge('1', '2'),
+    addEdge('0', '1'),
+    addNode('3', null),
+    addNode('2', null),
+    addNode('1', null),
+    addNode('0', null)
+  )(EMPTY_GRAPH);
+
+  const result = getEdges(testGraph);
+
+  t.deepEqual(result, [
+    ['0', '1'],
+    ['1', '2'],
+    ['2', '3'],
+    ['3', '0']
+  ].map( ([from, to]) => ({from, to}) ));
+  t.end();
+});
 
