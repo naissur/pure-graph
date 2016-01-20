@@ -1,4 +1,4 @@
-import {compose, curry, find, prop, values, equals, keys, reject, omit} from 'ramda';
+import {compose, curry, find, prop, values, equals, keys, reject, omit, pick} from 'ramda';
 import {hasNode} from './nodes';
 import xtend from 'xtend';
 
@@ -11,7 +11,7 @@ export const addEdge = curry((edgeId, startNodeId, endNodeId, graph) => {
   if (!hasEnd) throw new Error(`addEdge: node ${endNodeId} does not exist`);
 
   const toExtend = {
-    edges: xtend({}, graph.edges, {[edgeId]: {from: startNodeId, to: endNodeId}})
+    edges: xtend({}, graph.edges, {[edgeId]: {id: edgeId, from: startNodeId, to: endNodeId}})
   };
 
   return xtend({}, graph, toExtend);
@@ -31,7 +31,10 @@ export const hasEdgeWithId = curry( (edgeId, graph) => {
 
 
 export const removeEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
-  const filteredEdges = reject(equals({from: startNodeId, to: endNodeId}), graph.edges)
+  const filteredEdges = reject(compose(
+    equals({from: startNodeId, to: endNodeId}),
+    pick(['from', 'to'])
+  ), graph.edges)
   
   return xtend({}, graph, {edges: filteredEdges});
 });

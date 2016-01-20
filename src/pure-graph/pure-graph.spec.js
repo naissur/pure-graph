@@ -1,6 +1,11 @@
 import {test} from 'tap';
 // import {addNode, getNode, removeNode, hasNode} from './nodes';
-import {addNode, getNode, removeNode, hasNode, addEdge, hasEdgeWithId, hasEdgeFromTo, removeEdgeWithId, removeEdgeFromTo, EMPTY_GRAPH} from './index.js';
+import {
+  addNode, getNode, removeNode, hasNode, 
+  addEdge, getEdges, hasEdgeWithId, hasEdgeFromTo, removeEdgeWithId, removeEdgeFromTo, 
+  EMPTY_GRAPH
+} from './index.js';
+
 import {compose} from 'ramda';
 
 // ======================================= //
@@ -20,7 +25,8 @@ test('adding nodes and edges', t => {
     addNode(endId, endData)
   )(EMPTY_GRAPH);
 
-  const [hasStart, hasEnd, gotEdgeWithId, gotEdgeFromTo, gotStartData, gotEndData] = [
+  const [gotEdges, hasStart, hasEnd, gotEdgeWithId, gotEdgeFromTo, gotStartData, gotEndData] = [
+    getEdges,
     hasNode(startId),
     hasNode(endId),
     hasEdgeWithId(testEdgeId),
@@ -38,6 +44,9 @@ test('adding nodes and edges', t => {
   // check node data
   t.deepEqual(gotStartData, {id: startId, data: startData}, 'start node data gets retrieved correctly');
   t.deepEqual(gotEndData, {id: endId, data: endData}, 'end node data gets retrieved correctly');
+
+  // check retrieving edges
+  t.deepEqual(gotEdges, [{id: testEdgeId, from: startId, to: endId}], 'edge retrieved correctly');
 
   t.end();
 });

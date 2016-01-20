@@ -1,5 +1,5 @@
 import {test} from 'tap';
-import {addEdge, removeEdge, removeEdgeWithId, removeEdgeFromTo, getEdges, hasEdgeFromTo, hasEdgeWithId} from './edges';
+import {addEdge, removeEdgeWithId, removeEdgeFromTo, getEdges, hasEdgeFromTo, hasEdgeWithId} from './edges';
 import {addNode} from './nodes';
 import is from 'is';
 import {EMPTY_GRAPH} from './empty';
@@ -268,11 +268,13 @@ test(`edges getEdges gets the edges from the graph`, t => {
   const result = getEdges(testGraph);
 
   t.deepEqual(result, [
-    ['0', '1'],
-    ['1', '2'],
-    ['2', '3'],
-    ['3', '0']
-  ].map( ([from, to]) => ({from, to}) ));
+    ['0-1', '0', '1'],
+    ['1-2', '1', '2'],
+    ['2-3', '2', '3'],
+    ['3-0', '3', '0']
+  ].map( ([id, from, to]) => ({id, from, to}) ));
   t.end();
 });
+
+
 

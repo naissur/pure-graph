@@ -175,7 +175,7 @@ Removes the edge between nodes with the given id's. If any of the nodes has not 
 
 Removes the edge with the given id.
 
-#### `getEdges : GraphData -> [ {from: NodeId, to: NodeId} ]`
+#### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
 Gets an array of graph edges.
 
