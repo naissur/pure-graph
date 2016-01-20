@@ -1,8 +1,8 @@
-import {curry, find, prop} from 'ramda';
+import {compose, curry, find, prop, values, equals, keys, reject, omit} from 'ramda';
 import {hasNode} from './nodes';
 import xtend from 'xtend';
 
-export const addEdge = curry((startNodeId, endNodeId, graph) => {
+export const addEdge = curry((edgeId, startNodeId, endNodeId, graph) => {
   const hasStart = hasNode(startNodeId, graph);
   const hasEnd = hasNode(endNodeId, graph);
 
@@ -11,29 +11,36 @@ export const addEdge = curry((startNodeId, endNodeId, graph) => {
   if (!hasEnd) throw new Error(`addEdge: node ${endNodeId} does not exist`);
 
   const toExtend = {
-    edges: graph.edges.concat({from: startNodeId, to: endNodeId})
+    edges: xtend({}, graph.edges, {[edgeId]: {from: startNodeId, to: endNodeId}})
   };
 
   return xtend({}, graph, toExtend);
 });
 
+export const hasEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
+  const edges = values(graph.edges);
 
-export const hasEdge = curry((startNodeId, endNodeId, graph) => {
   return !!find(e => (e.from === startNodeId &&
-                      e.to === endNodeId), graph.edges);
+                      e.to === endNodeId), edges);
+});
+
+export const hasEdgeWithId = curry( (edgeId, graph) => {
+  const edgeIds = keys(graph.edges);
+  return !!find(equals(edgeId), edgeIds);
 });
 
 
-export const removeEdge = curry((startNodeId, endNodeId, graph) => {
-  const toExtend = {
-    edges: graph.edges.filter(edge => (
-      edge.from !== startNodeId &&
-      edge.to !== endNodeId
-    ))
-  };
-
-  return xtend({}, graph, toExtend);
+export const removeEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
+  const filteredEdges = reject(equals({from: startNodeId, to: endNodeId}), graph.edges)
+  
+  return xtend({}, graph, {edges: filteredEdges});
 });
 
-export const getEdges = prop('edges');
+export const removeEdgeWithId = curry((edgeId, graph) => {
+  const filteredEdges = omit([edgeId], graph.edges);
+  return xtend({}, graph, {edges: filteredEdges});
+});
+
+
+export const getEdges = compose(values, prop('edges'));
 

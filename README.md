@@ -19,25 +19,49 @@ import g from 'pure-graph';
 import _ from 'ramda';
 import assert from 'assert';
 
-const empty = g.EMPTY_GRAPH;        // initialize an empty graph
+
+const empty = g.EMPTY_GRAPH;    // initialize an empty graph
   
 const testGraph = _.compose(        // add nodes with '0' and '1' id's, and an edge between them
-  g.addEdge('0', '1'),              // (composed functions are applied from the last to the first)
+  g.addEdge('0-1', '0', '1'),              // (composed functions are applied from the last to the first)
   g.addNode('1', {x: 30, y: 40}),
   g.addNode('0', {x: 10, y: 20})
 )(empty);
 
 
-// existence
+
+// assertion
 
 assert(g.hasNode('0', testGraph), `has a node with id '0'`);
 assert(g.hasNode('1', testGraph), `has a node with id '1'`);
 
-assert(g.hasEdge('0', '1', testGraph), `has an edge from '0' to '1'`);
-assert.equal(g.hasEdge('0', '2', testGraph), false, `doesn't have an edge from '0' to '2'`);
+assert(g.hasEdgeFromTo('0', '1', testGraph), `has an edge from '0' to '1'`);
+assert.equal(g.hasEdgeFromTo('0', '2', testGraph), false, `doesn't have an edge from '0' to '2'`);
+
+assert(g.hasEdgeWithId('0-1', testGraph), `has an edge with id '0-1'`);
+assert.equal(g.hasEdgeWithId('0-2', testGraph), false, `doesn't have an edge with id '0-2'`);
 
 
-// data retrieval
+
+// removal
+
+assert.equal(
+  _.compose(
+    g.hasEdgeFromTo('0', '1'),
+    g.removeEdgeWithId('0-1')
+  )(testGraph), false, 'removes the edge between nodes'
+);
+
+assert.equal(
+  _.compose(
+    g.hasNode('0'),
+    g.removeNode('0')
+  )(testGraph), false, 'removes the node'
+);
+
+
+
+// data access
 
 assert.deepEqual(g.getNode('0', testGraph).data, {x: 10, y: 20}, 'start node data has been stored');
 assert.deepEqual(g.getNode('1', testGraph).data, {x: 30, y: 40}, 'end node data has been stored');
@@ -45,7 +69,9 @@ assert.deepEqual(g.getNode('1', testGraph).data, {x: 30, y: 40}, 'end node data 
 assert.deepEqual(g.getNodes(testGraph), [ {id: '0', data: {x: 10, y: 20}}, {id: '1', data: {x: 30, y: 40}} ], 'gets a nodes array');
 assert.deepEqual(g.getEdges(testGraph), [ {from: '0', to: '1'} ], 'gets an edges array');
 
-// data transforming functions
+
+
+// data transformations
 
 const coordsSum = _.compose(
     _.sum,
@@ -56,13 +82,15 @@ const coordsSum = _.compose(
 
 assert.equal(coordsSum, 100);
 
-// errors handling
+// error handling
 
 try {
   g.getNode('3', testGraph);    
 } catch (e) {
   assert.equal(e.message, 'getNode: no node with the id 3');
 }
+
+
 
 ```
 
@@ -127,17 +155,25 @@ Gets an array of graph nodes.
 
 ## Edges
 
-#### `addEdge : NodeId -> NodeId -> GraphData -> GraphData`
+#### `addEdge : EdgeId -> NodeId -> NodeId -> GraphData -> GraphData`
 
 Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
 
-#### `hasEdge : NodeId -> NodeId -> GraphData -> Boolean`
+#### `hasEdgeFromTo : NodeId -> NodeId -> GraphData -> Boolean`
 
 ...
 
-#### `removeEdge : NodeId -> NodeId -> GraphData -> GraphData`
+#### `hasEdgeWithId : EdgeId -> GraphData -> Boolean`
+
+...
+
+#### `removeEdgeFromTo : NodeId -> NodeId -> GraphData -> GraphData`
 
 Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.
+
+#### `removeEdgeWithId : EdgeId -> GraphData -> GraphData`
+
+Removes the edge with the given id.
 
 #### `getEdges : GraphData -> [ {from: NodeId, to: NodeId} ]`
 

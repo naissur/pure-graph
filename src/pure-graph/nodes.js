@@ -1,18 +1,15 @@
 import xtend from 'xtend';
-import {curry, dissocPath, contains, mapObjIndexed, values} from 'ramda';
+import {curry, dissocPath, contains, mapObjIndexed, values, keys} from 'ramda';
 import is from 'is';
 
 export const addNode = curry((nodeId, nodeData, graph) => {
   if (hasNode(nodeId, graph)) { return graph; }
-
-  const newNodeIds = graph.nodeIds.concat(nodeId);
 
   const transformedNodesData = xtend({}, graph.nodes, {
     [nodeId]: { id: nodeId, data: nodeData }
   });
 
   return xtend({}, graph, {
-    nodeIds: newNodeIds, 
     nodes: transformedNodesData
   });
 });
@@ -35,12 +32,12 @@ export const getNode = curry((nodeId, graph) => {
 
 export const removeNode = curry((nodeId, graph) => {
   const removedNode = dissocPath(['nodes', nodeId], graph);
-  const removedNodeIds = graph.nodeIds.filter(x => x !== nodeId);
-  return xtend({}, graph, removedNode, {nodeIds: removedNodeIds});
+  return xtend({}, graph, removedNode);
 });
 
 export const hasNode = curry( (nodeId, graph) => {
-  return contains(nodeId, graph.nodeIds);
+  const nodeIds = keys(graph.nodes);
+  return contains(nodeId, nodeIds);
 });
 
 export const mapNodeData = curry( (nodeId, fn, graph) => {
