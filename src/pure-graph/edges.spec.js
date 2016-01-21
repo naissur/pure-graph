@@ -1,5 +1,5 @@
 import {test} from 'tap';
-import {addEdge, removeEdgeWithId, removeEdgeFromTo, getEdges, hasEdgeFromTo, hasEdgeWithId} from './edges';
+import {addEdge, removeEdgeWithId, removeEdgeFromTo, getEdges, hasEdgeFromTo, hasEdgeWithId, getEdgeFromTo, getEdgeWithId} from './edges';
 import {addNode} from './nodes';
 import is from 'is';
 import {EMPTY_GRAPH} from './empty';
@@ -10,6 +10,8 @@ const TEST_GRAPH = compose(
   addNode('0', {data: 'data'}),
   addNode('1', {data: 'data'})
 )(EMPTY_GRAPH);
+
+const TEST_GRAPH_EDGED = addEdge('0-1', '0', '1', TEST_GRAPH);
 
 
 
@@ -276,5 +278,64 @@ test(`edges getEdges gets the edges from the graph`, t => {
   t.end();
 });
 
+
+// ==================== //
+// =     get edge     = //
+// ==================== //
+
+test(`edges export a getEdgeFromTo function`, t => {
+  t.equal(is.fn(getEdgeFromTo), true);
+  t.end();
+});
+
+test(`edges getEdgeFromTo throws a correct error if the edge hasn't been found`, t => {
+
+  try {
+    getEdgeFromTo('2', '1', TEST_GRAPH_EDGED);
+    t.fail('expected to throw');
+  } catch (e) {
+    t.equal(e.message, `getEdgeFromTo: edge from "2" to "1" doesn't exist`);
+  }
+
+  t.end();
+});
+
+
+test(`edges getEdgeFromTo returns a correct edge if it has been found`, t => {
+
+  const edge = getEdgeFromTo('0', '1', TEST_GRAPH_EDGED);
+  t.deepEqual(edge, { id: '0-1', from: '0', to: '1' });
+
+  t.end();
+});
+
+
+
+test(`edges export a getEdgeWithId function`, t => {
+  t.equal(is.fn(getEdgeWithId), true);
+  t.end();
+});
+
+
+test(`edges getEdgeWithId throws a correct error if the edge hasn't been found`, t => {
+
+  try {
+    getEdgeWithId('2-1', TEST_GRAPH_EDGED);
+    t.fail('expected to throw');
+  } catch (e) {
+    t.equal(e.message, `getEdgeWithId: edge with id "2-1" doesn't exist`);
+  }
+
+  t.end();
+});
+
+
+test(`edges getEdgeWithId returns a correct edge if it has been found`, t => {
+
+  const edge = getEdgeWithId('0-1', TEST_GRAPH_EDGED);
+  t.deepEqual(edge, { id: '0-1', from: '0', to: '1' });
+
+  t.end();
+});
 
 
