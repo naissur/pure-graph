@@ -1,38 +1,20 @@
-import xtend from 'xtend';
-import {curry, dissocPath, contains, mapObjIndexed, values, keys} from 'ramda';
-import is from 'is';
+import {curry, assocPath, contains, keys, pick, compose, map, over, lensProp, lensPath, prop, reduce} from 'ramda';
+// import is from 'is';
 
-export const addNode = curry((nodeId, nodeData, graph) => {
-  if (hasNode(nodeId, graph)) { return graph; }
-
-  const transformedNodesData = xtend({}, graph.nodes, {
-    [nodeId]: { id: nodeId, data: nodeData }
-  });
-
-  return xtend({}, graph, {
-    nodes: transformedNodesData
-  });
-});
+export const addNode = curry((nodeId, nodeData, graph) => 
+  assocPath(
+    ['nodes', nodeId], {
+      id: nodeId, data: nodeData,
+      edgesFrom: {}, edgesTo: {} 
+    }
+  )(graph)
+);
 
 export const getNode = curry((nodeId, graph) => {
-  let node;
+  const has = hasNode(nodeId, graph);
+  if (!has) throw new Error(`getNode: no node with the id ${nodeId}`);
 
-  try {
-    node = graph.nodes[nodeId];
-  } catch (e) {
-    throw new Error('getNode: got an invalid graph');
-  }
-
-  if (!is.defined(node)) {
-    throw new Error(`getNode: no node with the id ${nodeId}`);
-  }
-
-  return node;
-});
-
-export const removeNode = curry((nodeId, graph) => {
-  const removedNode = dissocPath(['nodes', nodeId], graph);
-  return xtend({}, graph, removedNode);
+  return pick(['data', 'id'], graph.nodes[nodeId]);
 });
 
 export const hasNode = curry( (nodeId, graph) => {
@@ -43,12 +25,8 @@ export const hasNode = curry( (nodeId, graph) => {
 export const mapNodeData = curry( (nodeId, fn, graph) => {
   if (!hasNode(nodeId, graph)) { return graph; }
 
-  const node = graph.nodes[nodeId];
-  const transformedNodesData = xtend({}, graph.nodes, {
-    [nodeId]: xtend({}, node, {data: fn(node.data)})
-  });
-
-  return xtend({}, graph, { nodes: transformedNodesData });
+  return over(lensPath(['nodes', nodeId]), 
+      over(lensProp('data'), fn), graph);
 });
 
 export const setNodeData = curry( (nodeId, data, graph) => {
@@ -57,17 +35,20 @@ export const setNodeData = curry( (nodeId, data, graph) => {
   return mapNodeData(nodeId, () => data, graph);
 });
 
-export const mapNodes = curry( (fn, graph) => {
-  const newNodes = 
-    mapObjIndexed( ({data, id}) => ({
-      id, data: fn(data, id)
-    }), graph.nodes);
-
-  return xtend({}, graph, {nodes: newNodes});
-});
-
-
-export const getNodes = curry( graph => (
-  values(graph.nodes)
+export const mapNodes = curry( (fn, graph) => (
+  reduce( 
+    (result, nodeId) => mapNodeData(nodeId, data => fn(data, nodeId), result),
+    graph
+  )(getNodesIds(graph))
 ));
+
+
+export const getNodes = graph => (
+  compose(
+    map(nodeId => getNode(nodeId, graph)),
+    getNodesIds
+  )(graph)
+);
+
+const getNodesIds = compose(keys, prop('nodes'));
 

@@ -1,5 +1,11 @@
 import {test} from 'tap';
-import {addEdge, removeEdgeWithId, removeEdgeFromTo, getEdges, hasEdgeFromTo, hasEdgeWithId, getEdgeFromTo, getEdgeWithId} from './edges';
+import {
+  addEdge, getEdges, 
+  hasEdgeFromTo, hasEdgeWithId, 
+  getEdgeFromTo, getEdgeWithId, 
+  getEdgesFromNode, getEdgesToNode, getEdgesAdjacentToNode
+} from './edges';
+
 import {addNode} from './nodes';
 import is from 'is';
 import {EMPTY_GRAPH} from './empty';
@@ -130,114 +136,6 @@ test(`edges hasEdgeWithId returns true after the edge has been added`, t => {
 });
 
 
-// ===================== //
-// =    remove edge    = //
-// ===================== //
-
-test(`edges export a removeEdgeFromTo() function`, t => {
-  t.equals(is.fn(removeEdgeFromTo), true);
-  t.end();
-});
-
-
-test(`edges removeEdgeFromTo doesn't throw error when the edge doesn't exist, and returns the same graph`, t => {
-  try {
-    const removed = removeEdgeFromTo('0', '1', EMPTY_GRAPH);
-    t.deepEqual(removed, EMPTY_GRAPH, 'ok');
-  } catch (e) {
-    t.fail('expected not to throw');
-  }
-
-  t.end();
-});
-
-
-test(`edges removeEdgeFromTo: composition of 'addEdge' and 'removeEdgeFromTo' doesn't change the graph`, t => {
-  const startId = '0';
-  const endId = '1';
-  const testEdgeId = '0-1';
-
-  const result = compose(
-    removeEdgeFromTo(startId, endId),
-    addEdge(testEdgeId, startId, endId)
-  )(TEST_GRAPH);
-
-  t.deepEqual(result, TEST_GRAPH, 'ok');
-
-  t.end();
-});
-
-
-test(`edges removeEdgeFromTo: hasEdgeFromTo & hasEdgeWithId returns false after removeEdgeFromTo has been invoked`, t => {
-  const startId = '0';
-  const endId = '1';
-  const testEdgeId = '0-1';
-
-  const added = addEdge(testEdgeId, startId, endId, TEST_GRAPH);
-  const removed = removeEdgeFromTo(startId, endId, added);
-
-  t.deepEqual(hasEdgeFromTo(startId, endId, added), true);
-  t.deepEqual(hasEdgeFromTo(startId, endId, removed), false);
-
-  t.deepEqual(hasEdgeWithId(testEdgeId, added), true);
-  t.deepEqual(hasEdgeWithId(testEdgeId, removed), false);
-
-  t.end();
-});
-
-
-
-test(`edges export a removeEdgeWithId() function`, t => {
-  t.equals(is.fn(removeEdgeWithId), true);
-  t.end();
-});
-
-test(`edges removeEdgeWithId doesn't throw error when the edge doesn't exist, and returns the same graph`, t => {
-  try {
-    const removed = removeEdgeWithId('0-1', EMPTY_GRAPH);
-    t.deepEqual(removed, EMPTY_GRAPH, 'ok');
-  } catch (e) {
-    t.fail('expected not to throw');
-  }
-
-  t.end();
-});
-
-
-test(`edges removeEdgeWithId: composition of 'addEdge' and 'removeEdgeWithId' doesn't change the graph`, t => {
-  const startId = '0';
-  const endId = '1';
-  const testEdgeId = '0-1';
-
-  const result = compose(
-    removeEdgeWithId(testEdgeId),
-    addEdge(testEdgeId, startId, endId)
-  )(TEST_GRAPH);
-
-  t.deepEqual(result, TEST_GRAPH, 'ok');
-
-  t.end();
-});
-
-
-test(`edges removeEdgeWithId: hasEdgeFromTo & hasEdgeWithId returns false after removeEdgeWithId has been invoked`, t => {
-  const startId = '0';
-  const endId = '1';
-  const testEdgeId = '0-1';
-
-  const added = addEdge(testEdgeId, startId, endId, TEST_GRAPH);
-  const removed = removeEdgeWithId(testEdgeId);
-
-  t.deepEqual(hasEdgeFromTo(startId, endId, added), true);
-  t.deepEqual(hasEdgeFromTo(startId, endId, removed), false);
-
-  t.deepEqual(hasEdgeWithId(testEdgeId, added), true);
-  t.deepEqual(hasEdgeWithId(testEdgeId, removed), false);
-
-  t.end();
-});
-
-
 
 // ==================== //
 // =    get edges     = //
@@ -337,5 +235,4 @@ test(`edges getEdgeWithId returns a correct edge if it has been found`, t => {
 
   t.end();
 });
-
 

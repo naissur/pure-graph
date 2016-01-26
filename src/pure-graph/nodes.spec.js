@@ -1,5 +1,10 @@
 import {test} from 'tap';
-import {addNode, getNode, removeNode, hasNode, mapNodeData, setNodeData, getNodes, mapNodes} from './nodes';
+import {
+  addNode, getNode, getNodes, hasNode,
+  mapNodeData, setNodeData, 
+  mapNodes
+} from './nodes';
+
 import {EMPTY_GRAPH} from './empty';
 import is from 'is';
 import {compose} from 'ramda';
@@ -61,19 +66,6 @@ test(`nodes getNode gets the previously added nodes, as an object with the corre
   t.end();
 });
 
-test(`nodes getNode throws an error when the graph is invalid, correctly`, t => {
-  const testId = '13';
-
-  try {
-    getNode(testId, []);
-    t.fail('must have thrown');
-  } catch (e) {
-    t.equal(e.message, 'getNode: got an invalid graph');
-    t.pass('passed');
-  }
-
-  t.end();
-});
 
 test(`nodes getNode throws an error when the node doesn't exist, with the correct error`, t => {
   const testId = '13';
@@ -89,41 +81,6 @@ test(`nodes getNode throws an error when the node doesn't exist, with the correc
   t.end();
 });
 
-
-
-// ===================== //
-// =    remove node    = //
-// ===================== //
-
-test(`nodes export a 'removeNode' function`, t => {
-  t.equal(is.fn(removeNode), true);
-  t.end();
-});
-
-
-test(`nodes removeNode(x) after addNode(x) returns the same graph`, t => {
-  const testId = '13';
-  const testData = {a: 1, b: 2};
-  const afterAdded = addNode(testId, testData, EMPTY_GRAPH);
-  const afterRemoved = removeNode(testId, afterAdded);
-
-  t.deepEqual(afterRemoved, EMPTY_GRAPH);
-  t.end();
-});
-
-
-test(`nodes removeNode doesn't throw error when the node doesn't exist, and returns the same graph`, t => {
-  const testId = 'testId';
-
-  try {
-    const removed = removeNode(testId, EMPTY_GRAPH);
-    t.deepEqual(removed, EMPTY_GRAPH, 'ok');
-  } catch (e) {
-    t.fail('expected not to throw');
-  }
-
-  t.end();
-});
 
 
 // ===================== //
@@ -157,22 +114,6 @@ test(`nodes hasNode returns true after a node has been added`, t => {
   t.equal(result, true);
   t.end();
 });
-
-
-test(`nodes hasNode returns false after a node has been added and then removed`, t => {
-  const testId = '13';
-  const testData = {a: 1, b: 2};
-  const afterAddAndRemove = compose(
-    removeNode(testId),
-    addNode(testId, testData)
-  )(EMPTY_GRAPH);
-
-  const result = hasNode(testId, afterAddAndRemove);
-
-  t.equal(result, false);
-  t.end();
-});
-
 
 
 // ==================== //
@@ -300,11 +241,11 @@ test(`nodes export an 'mapNodes' function`, t => {
 
 test(`nodes mapNodes maps the node data`, t => {
   const testData = [
-    [1, 2], [3, 4], [5, 6], [7, 8]
+    ['1', 2], ['3', 4], ['5', 6], ['7', 8]
   ];
   const testGraph = compose(
     ...(testData.map(
-      ( [x, y], index) => addNode(index.toString(), {x, y})
+      ( [index, data] ) => addNode(index, data)
     ))
   )(EMPTY_GRAPH);
 
@@ -312,12 +253,11 @@ test(`nodes mapNodes maps the node data`, t => {
   const result = compose(
     nodes => nodes.map(n => n.data),
     getNodes,
-    mapNodes( ({x, y}) => [x, y] )
+    mapNodes( (data, index) => [index, data] )
   )(testGraph);
 
 
   t.deepEqual(result, testData);
   t.end();
 });
-
 

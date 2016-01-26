@@ -1,4 +1,4 @@
-import {compose, curry, find, prop, values, equals, keys, reject, omit, pick} from 'ramda';
+import {compose, curry, find, prop, values, equals, keys, assocPath, dissocPath, map} from 'ramda';
 import is from 'is';
 import {hasNode} from './nodes';
 import xtend from 'xtend';
@@ -11,11 +11,13 @@ export const addEdge = curry((edgeId, startNodeId, endNodeId, graph) => {
   if (!hasStart) throw new Error(`addEdge: node ${startNodeId} does not exist`);
   if (!hasEnd) throw new Error(`addEdge: node ${endNodeId} does not exist`);
 
-  const toExtend = {
-    edges: xtend({}, graph.edges, {[edgeId]: {id: edgeId, from: startNodeId, to: endNodeId}})
-  };
 
-  return xtend({}, graph, toExtend);
+  const newEdge = {id: edgeId, from: startNodeId, to: endNodeId};
+  return compose(
+    assocPath(['nodes', startNodeId, 'edgesFrom', edgeId], true ),
+    assocPath(['nodes', endNodeId, 'edgesTo', edgeId], true ),
+    assocPath(['edges', edgeId], newEdge)
+  )(graph);
 });
 
 export const hasEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
@@ -30,20 +32,6 @@ export const hasEdgeWithId = curry( (edgeId, graph) => {
   return !!find(equals(edgeId), edgeIds);
 });
 
-
-export const removeEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
-  const filteredEdges = reject(compose(
-    equals({from: startNodeId, to: endNodeId}),
-    pick(['from', 'to'])
-  ), graph.edges)
-  
-  return xtend({}, graph, {edges: filteredEdges});
-});
-
-export const removeEdgeWithId = curry((edgeId, graph) => {
-  const filteredEdges = omit([edgeId], graph.edges);
-  return xtend({}, graph, {edges: filteredEdges});
-});
 
 
 export const getEdges = compose(values, prop('edges'));

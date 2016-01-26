@@ -78,7 +78,7 @@ test('removing nodes and edges from to', t => {
   t.end();
 });
 
-test('removing nodes and edges by id', t => {
+test('removing nodes', t => {
   const added = compose(
     addEdge('0-1', '0', '1'),
     addNode('0', {x: 10, y: 10}),
@@ -86,7 +86,6 @@ test('removing nodes and edges by id', t => {
   )(EMPTY_GRAPH);
 
   const removed = compose(
-    removeEdgeWithId('0-1'),
     removeNode('1'),
     removeNode('0')
   )(added);
@@ -101,6 +100,23 @@ test('removing nodes and edges by id', t => {
   t.equal(hasEnd, false, 'removed end node');
   t.equal(hasEdgeAdded, false, 'removed edge');
 
+  t.end();
+});
+
+test('removing edges by id', t => {
+  const added = compose(
+    addEdge('0-1', '0', '1'),
+    addNode('0', {x: 10, y: 10}),
+    addNode('1', {x: 40, y: 40})
+  )(EMPTY_GRAPH);
+
+
+  const removedWithId = removeEdgeWithId('0-1', added);
+  const removedFromTo = removeEdgeFromTo('0', '1', added);
+
+
+  t.equal(hasEdgeFromTo('0', '1', removedWithId), false, 'removed edge');
+  t.equal(hasEdgeFromTo('0', '1', removedFromTo), false, 'removed edge');
   t.end();
 });
 
