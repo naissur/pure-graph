@@ -1,14 +1,30 @@
-import {compose, curry, find, prop, values, keys, assocPath, map, contains} from 'ramda';
+import {compose, curry, find, prop, values, keys, assocPath, map, contains, path} from 'ramda';
 import xtend from 'xtend';
 import {hasNode} from './nodes';
+
+
+
+export const getEdges = compose(values, prop('edges'));
+
+export const hasEdgeWithId = curry( (edgeId, graph) => {
+  return !!path(['edges', edgeId], graph);
+});
+
+export const getEdgeWithId = curry( (edgeId, graph) => {
+  if (!hasEdgeWithId(edgeId, graph)) throw new Error(`getEdgeWithId: edge with id ${JSON.stringify(edgeId)} doesn't exist`);
+
+  return path(['edges', edgeId], graph);
+});
+
 
 export const getEdgesFromNode = curry( (nodeId, graph) => {
   if (!hasNode(nodeId, graph)) throw new Error(`getEdgesFromNode: no node with the id ${nodeId}`);
 
   return compose(
     map(edgeId => getEdgeWithId(edgeId, graph)),
-    keys
-  )(graph.nodes[nodeId].edgesFrom);
+    keys,
+    path(['nodes', nodeId, 'edgesFrom'])
+  )(graph);
 });
 
 
@@ -17,8 +33,9 @@ export const getEdgesToNode = curry( (nodeId, graph) => {
 
   return compose(
     map(edgeId => getEdgeWithId(edgeId, graph)),
-    keys
-  )(graph.nodes[nodeId].edgesTo);
+    keys,
+    path(['nodes', nodeId, 'edgesTo'])
+  )(graph);
 });
 
 export const getEdgesIncidentToNode = curry( (nodeId, graph) => {
@@ -41,8 +58,6 @@ export const getEdgeFromTo = curry( (startNodeId, endNodeId, graph) => {
 });
 
 
-
-export const getEdges = compose(values, prop('edges'));
 
 export const hasEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
   if (!hasNode(startNodeId, graph)) return false;
@@ -70,16 +85,6 @@ export const addEdge = curry((edgeId, startNodeId, endNodeId, graph) => {
   )(graph);
 });
 
-
-export const getEdgeWithId = curry( (edgeId, graph) => {
-  if (!hasEdgeWithId(edgeId, graph)) throw new Error(`getEdgeWithId: edge with id ${JSON.stringify(edgeId)} doesn't exist`);
-
-  return graph.edges[edgeId];
-});
-
-export const hasEdgeWithId = curry( (edgeId, graph) => {
-  return !!graph.edges[edgeId];
-});
 
 
 
