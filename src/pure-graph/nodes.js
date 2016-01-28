@@ -1,4 +1,4 @@
-import {curry, assocPath, contains, keys, pick, compose, map, over, lensProp, lensPath, prop, reduce} from 'ramda';
+import {curry, assocPath, keys, pick, compose, map, prop, reduce} from 'ramda';
 // import is from 'is';
 
 export const addNode = curry((nodeId, nodeData, graph) => 
@@ -18,21 +18,22 @@ export const getNode = curry((nodeId, graph) => {
 });
 
 export const hasNode = curry( (nodeId, graph) => {
-  const nodeIds = keys(graph.nodes);
-  return contains(nodeId, nodeIds);
+  return !!graph.nodes[nodeId];
 });
 
 export const mapNodeData = curry( (nodeId, fn, graph) => {
   if (!hasNode(nodeId, graph)) { return graph; }
 
-  return over(lensPath(['nodes', nodeId]), 
-      over(lensProp('data'), fn), graph);
+  const node = getNode(nodeId, graph);
+  const mappedData = fn(node.data);
+
+  return setNodeData(nodeId, mappedData, graph);
 });
 
 export const setNodeData = curry( (nodeId, data, graph) => {
   if (!hasNode(nodeId, graph)) throw new Error(`setNodeData: node with id ${nodeId} doesn't exist`);
 
-  return mapNodeData(nodeId, () => data, graph);
+  return assocPath(['nodes', nodeId, 'data'], data, graph);
 });
 
 export const mapNodes = curry( (fn, graph) => (

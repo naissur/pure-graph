@@ -2,14 +2,13 @@ import {compose, curry, dissocPath, reduce, prop, map} from 'ramda';
 
 import {
   hasEdgeFromTo, hasEdgeWithId,
-  getEdgeFromTo, getEdgeWithId
+  getEdgeFromTo, getEdgeWithId,
+  getEdgesIncidentToNode
 } from './edges'
 
 import {
   hasNode
 } from './nodes';
-
-import {getEdgesIncidentToNode} from './incident';
 
 
 

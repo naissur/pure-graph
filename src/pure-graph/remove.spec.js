@@ -120,7 +120,7 @@ test(`edges removeEdgeWithId: hasEdgeFromTo & hasEdgeWithId returns false after 
   const testEdgeId = '0-1';
 
   const added = addEdge(testEdgeId, startId, endId, TEST_GRAPH);
-  const removed = removeEdgeWithId(testEdgeId);
+  const removed = removeEdgeWithId(testEdgeId, added);
 
   t.deepEqual(hasEdgeFromTo(startId, endId, added), true);
   t.deepEqual(hasEdgeFromTo(startId, endId, removed), false);
@@ -192,6 +192,29 @@ test(`nodes removeNode() removes the edges originating at and coming from the no
 
   t.equal(hasEdgeWithId('0-1', afterRemoved), false);
   t.deepEqual(removeNode('1', afterRemoved), EMPTY_GRAPH);
+  t.end();
+});
+
+test(`nodes removeNode() removes the edges correctly (specific case)`, t => {
+  const testGraph = compose(
+    addEdge('2-0', '2', '0'),
+    addEdge('0-1', '0', '1'),
+    addNode('0', {val: 0}),
+    addNode('1', {val: 1}),
+    addNode('2', {val: 2})
+  )(EMPTY_GRAPH);
+
+
+  const result = removeNode('1', testGraph);
+
+
+  const expected = compose(
+    addEdge('2-0', '2', '0'),
+    addNode('2', {val: 2}),
+    addNode('0', {val: 0})
+  )(EMPTY_GRAPH);
+
+  t.deepEqual(result, expected), 'removes the node correctly';
   t.end();
 });
 
