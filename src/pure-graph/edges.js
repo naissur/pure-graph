@@ -41,13 +41,6 @@ export const getEdgeFromTo = curry( (startNodeId, endNodeId, graph) => {
 });
 
 
-const getReachableNodesIds = curry((nodeId, graph) => (
-  compose(
-    map(prop('to')),
-    getEdgesFromNode(nodeId)
-  )(graph)
-));
-
 
 export const getEdges = compose(values, prop('edges'));
 
@@ -55,7 +48,7 @@ export const hasEdgeFromTo = curry((startNodeId, endNodeId, graph) => {
   if (!hasNode(startNodeId, graph)) return false;
   if (!hasNode(endNodeId, graph)) return false;
 
-  const reachableFromStart = getReachableNodesIds(startNodeId, graph); // check only the nodes reachable from the start one
+  const reachableFromStart = map(prop('to'), getEdgesFromNode(startNodeId, graph)); // check only the nodes reachable from the start one
 
   return contains(endNodeId, reachableFromStart);
 });

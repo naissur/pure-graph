@@ -339,9 +339,9 @@ test(`edges getEdgesToNode returns the edges ending at the node`, t => {
 });
 
 
-// ============= //
-// =    adj     = //
-// ============= //
+// ========================== //
+// =        incident        = //
+// ========================== //
 
 
 test(`edges export an 'getEdgesIncidentToNode' function`, t => {
