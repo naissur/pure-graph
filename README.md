@@ -173,13 +173,13 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 
 #### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
-#### `getEdgesFromNode: NodeId -> GraphData -> GraphData`
+#### `getEdgesFromNode: NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 Gets the edges incident to the node with the given id, directed **from** the node.
 
-#### `getEdgesToNode: NodeId -> GraphData -> GraphData`
+#### `getEdgesToNode: NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 Gets the edges incident to the node with the given id, directed **towards** the node.
 
-#### `getEdgesIncidentToNode: NodeId -> GraphData -> GraphData`
+#### `getEdgesIncidentToNode: NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 Gets all of the edges incident to the node with the given id.
 
 
