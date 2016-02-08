@@ -1,7 +1,6 @@
 import {test} from 'tap';
-// import {addNode, getNode, removeNode, hasNode} from './nodes';
 import {
-  addNode, getNode, removeNode, hasNode, 
+  addNode, removeNode, hasNode, 
   addEdge, getEdges, hasEdgeWithId, hasEdgeFromTo, removeEdgeWithId, removeEdgeFromTo, 
   EMPTY_GRAPH
 } from './index.js';
@@ -16,23 +15,19 @@ test('adding nodes and edges', t => {
   const startId = '0';
   const endId = '1';
   const testEdgeId = '0-1';
-  const startData = {x: 10, y: 10};
-  const endData = {x: 40, y: 40};
 
   const addedEdge = compose(
     addEdge(testEdgeId, startId, endId),
-    addNode(startId, startData),
-    addNode(endId, endData)
+    addNode(startId),
+    addNode(endId)
   )(EMPTY_GRAPH);
 
-  const [gotEdges, hasStart, hasEnd, gotEdgeWithId, gotEdgeFromTo, gotStartData, gotEndData] = [
+  const [gotEdges, hasStart, hasEnd, gotEdgeWithId, gotEdgeFromTo] = [
     getEdges,
     hasNode(startId),
     hasNode(endId),
     hasEdgeWithId(testEdgeId),
-    hasEdgeFromTo(startId, endId),
-    getNode(startId),
-    getNode(endId)
+    hasEdgeFromTo(startId, endId)
   ].map(fn => fn(addedEdge));
 
   // check existance
@@ -41,9 +36,6 @@ test('adding nodes and edges', t => {
   t.equal(gotEdgeWithId, true, 'has edge with id');
   t.equal(gotEdgeFromTo, true, 'has edge from to');
 
-  // check node data
-  t.deepEqual(gotStartData, {id: startId, data: startData}, 'start node data gets retrieved correctly');
-  t.deepEqual(gotEndData, {id: endId, data: endData}, 'end node data gets retrieved correctly');
 
   // check retrieving edges
   t.deepEqual(gotEdges, [{id: testEdgeId, from: startId, to: endId}], 'edge retrieved correctly');
@@ -55,8 +47,8 @@ test('adding nodes and edges', t => {
 test('removing nodes and edges from to', t => {
   const added = compose(
     addEdge('0-1', '0', '1'),
-    addNode('0', {x: 10, y: 10}),
-    addNode('1', {x: 40, y: 40})
+    addNode('0'),
+    addNode('1')
   )(EMPTY_GRAPH);
 
   const removed = compose(
@@ -81,8 +73,8 @@ test('removing nodes and edges from to', t => {
 test('removing nodes', t => {
   const added = compose(
     addEdge('0-1', '0', '1'),
-    addNode('0', {x: 10, y: 10}),
-    addNode('1', {x: 40, y: 40})
+    addNode('0'),
+    addNode('1')
   )(EMPTY_GRAPH);
 
   const removed = compose(
@@ -106,8 +98,8 @@ test('removing nodes', t => {
 test('removing edges by id', t => {
   const added = compose(
     addEdge('0-1', '0', '1'),
-    addNode('0', {x: 10, y: 10}),
-    addNode('1', {x: 40, y: 40})
+    addNode('0'),
+    addNode('1')
   )(EMPTY_GRAPH);
 
 

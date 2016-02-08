@@ -32,8 +32,8 @@ const empty = g.EMPTY_GRAPH;        // initialize an empty graph
   
 const testGraph = _.compose(        // add nodes with '0' and '1' id's, and an edge between them
   g.addEdge('0-1', '0', '1'),       // (composed functions are applied from the last to the first)
-  g.addNode('1', {x: 30, y: 40}),
-  g.addNode('0', {x: 10, y: 20})
+  g.addNode('1'),
+  g.addNode('0')
 )(empty);
 
 
@@ -78,23 +78,13 @@ assert.equal(
 assert.deepEqual(g.getNode('0', testGraph).data, {x: 10, y: 20}, 'start node data has been stored');
 assert.deepEqual(g.getNode('1', testGraph).data, {x: 30, y: 40}, 'end node data has been stored');
 
-assert.deepEqual(g.getNodes(testGraph), [ {id: '0', data: {x: 10, y: 20}}, {id: '1', data: {x: 30, y: 40}} ], 'gets a nodes array');
-assert.deepEqual(g.getEdges(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
+assert.deepEqual(g.getNodesIds(testGraph), [ '0', '1' ], 'gets an array of nodes ids');
+assert.deepEqual(g.getEdgesIds(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
 
 assert.deepEqual(g.getEdgesFromNode('0', testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets edges from the node');
 assert.deepEqual(g.getEdgesIncidentToNode('1', testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets edges incident to the node');
 assert.deepEqual(g.getEdges(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
 
-// data transforming functions
-
-const coordsSum = _.compose(
-    _.sum,
-    _.map(_.prop('data')),
-    g.getNodes,
-    g.mapNodes( ({x, y}) => (x + y) )
-  )(testGraph)
-
-assert.equal(coordsSum, 100);
 
 // error handling
 
@@ -140,8 +130,8 @@ console.log('all good!');
 
 ## Adding
 
-#### `addNode : NodeId -> NodeData -> GraphData -> GraphData`
-Adds a node with `NodeId` id and `NodeData` data. `NodeId` and `NodeData` can be of any js types.
+#### `addNode : NodeId -> GraphData -> GraphData`
+Adds a node with `NodeId` id.
 
 #### `addEdge : EdgeId -> NodeId -> NodeId -> GraphData -> GraphData`
 Adds an edge between nodes with the given id's. If one of the nodes has not been found, throws an error.
@@ -160,8 +150,6 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 
 ## Retrieving
 
-#### `getNode : NodeId -> GraphData -> {id: NodeId, data: NodeData}`
-
 #### `getEdgeFromTo : NodeId -> NodeId -> GraphData -> {id: EdgeId, from: NodeId, to: NodeId}`
 
 #### `getEdgeWithId : EdgeId -> GraphData -> {id: EdgeId, from: NodeId, to: NodeId}`
@@ -169,7 +157,7 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 **note**: all of the getters above throw an error if the item has not been found.
 
 
-#### `getNodes : GraphData -> [ {id: NodeId, data: NodeData} ]`
+#### `getNodesIds : GraphData -> [ NodeId ]`
 
 #### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
@@ -184,27 +172,10 @@ Gets all of the edges incident to the node with the given id.
 
 
 
-
-
-## Transforming
-
-#### `mapNodeData : NodeId -> (NodeData -> NodeData) -> GraphData -> GraphData`
-Transforms a node's data by mapping. Returns an unmodified graph if the node hasn't been found.
-
-#### `setNodeData : NodeId -> NodeData -> GraphData -> GraphData`
-Sets node data. Throws an error if the node has not been found.
-
-#### `mapNodes : ( NodeData -> NodeId -> NodeData) -> GraphData -> GraphData`
-Transforms the nodes' data by mapping.
-
-
-
-
-
 ## Removing
 
 #### `removeNode : NodeId -> GraphData -> GraphData`
-Removes a node with `NodeId` id and **all of the adjacent edges** from the graph. Returns an unmodified graph if the node hasn't been found.
+Removes a node with `NodeId` id and **all of the incident edges** from the graph. Returns an unmodified graph if the node hasn't been found.
 
 #### `removeEdgeFromTo : NodeId -> NodeId -> GraphData -> GraphData`
 Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.

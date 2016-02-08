@@ -1,53 +1,18 @@
-import {curry, assocPath, keys, pick, compose, map, prop, reduce, path} from 'ramda';
+import {curry, assocPath, keys, compose, prop, path} from 'ramda';
 
-export const addNode = curry((nodeId, nodeData, graph) => 
+export const addNode = curry((nodeId, graph) => 
   assocPath(
     ['nodes', nodeId], {
-      id: nodeId, data: nodeData,
+      id: nodeId,
       edgesFrom: {}, edgesTo: {} 
     }
   )(graph)
 );
 
-export const getNode = curry((nodeId, graph) => {
-  if (!hasNode(nodeId, graph)) throw new Error(`getNode: no node with the id ${nodeId}`);
-
-  return pick(['data', 'id'], graph.nodes[nodeId]);
-});
-
 export const hasNode = curry( (nodeId, graph) => {
   return !!path(['nodes', nodeId], graph);
 });
 
-export const mapNodeData = curry( (nodeId, fn, graph) => {
-  if (!hasNode(nodeId, graph)) { return graph; }
+export const getNodesIds = compose(keys, prop('nodes'));
 
-  const node = getNode(nodeId, graph);
-  const mappedData = fn(node.data);
-
-  return setNodeData(nodeId, mappedData, graph);
-});
-
-export const setNodeData = curry( (nodeId, data, graph) => {
-  if (!hasNode(nodeId, graph)) throw new Error(`setNodeData: node with id ${nodeId} doesn't exist`);
-
-  return assocPath(['nodes', nodeId, 'data'], data, graph);
-});
-
-export const mapNodes = curry( (fn, graph) => (
-  reduce( 
-    (result, nodeId) => mapNodeData(nodeId, data => fn(data, nodeId), result),
-    graph
-  )(getNodesIds(graph))
-));
-
-
-export const getNodes = graph => (
-  compose(
-    map(nodeId => getNode(nodeId, graph)),
-    getNodesIds
-  )(graph)
-);
-
-const getNodesIds = compose(keys, prop('nodes'));
 

@@ -13,8 +13,8 @@ import {compose} from 'ramda';
 
 
 const TEST_GRAPH = compose(
-  addNode('0', {data: 'data'}),
-  addNode('1', {data: 'data'})
+  addNode('0'),
+  addNode('1')
 )(EMPTY_GRAPH);
 
 const TEST_GRAPH_EDGED = addEdge('0-1', '0', '1', TEST_GRAPH);
@@ -51,7 +51,7 @@ test(`edges addEdge fails with correct error if the start node does not exist`, 
   const testEnd = '14';
   const testEdgeId = '13-14';
 
-  const added = addNode(testEnd, null, EMPTY_GRAPH );
+  const added = addNode(testEnd, EMPTY_GRAPH );
 
   try {
     addEdge(testEdgeId, testStart, testEnd, added);
@@ -69,7 +69,7 @@ test(`edges addEdge fails with correct error if the end node does not exist`, t 
   const testEnd = '14';
   const testEdgeId = '13-14';
 
-  const added = addNode(testStart, null, EMPTY_GRAPH );
+  const added = addNode(testStart, EMPTY_GRAPH );
 
   try {
     addEdge(testEdgeId, testStart, testEnd, added);
@@ -159,10 +159,10 @@ test(`edges getEdges gets the edges from the graph`, t => {
     addEdge('2-3', '2', '3'),
     addEdge('1-2', '1', '2'),
     addEdge('0-1', '0', '1'),
-    addNode('3', null),
-    addNode('2', null),
-    addNode('1', null),
-    addNode('0', null)
+    addNode('3'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
   )(EMPTY_GRAPH);
 
   const result = getEdges(testGraph);
@@ -273,9 +273,9 @@ test(`edges getEdgesFromNode returns the edges originating at the node`, t => {
   const testGraph = compose(
     addEdge('0-1', '0', '1'),
     addEdge('0-2', '0', '2'),
-    addNode('2', null),
-    addNode('1', null),
-    addNode('0', null)
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
   )(EMPTY_GRAPH);
 
 
@@ -322,9 +322,9 @@ test(`edges getEdgesToNode returns the edges ending at the node`, t => {
   const testGraph = compose(
     addEdge('1-0', '1', '0'),
     addEdge('2-0', '2', '0'),
-    addNode('2', null),
-    addNode('1', null),
-    addNode('0', null)
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
   )(EMPTY_GRAPH);
 
 
@@ -373,9 +373,9 @@ test(`edges getEdgesIncidentToNode returns the edges adjacent to the node`, t =>
     addEdge('0-2', '0', '2'),
     addEdge('1-0', '1', '0'),
     addEdge('2-0', '2', '0'),
-    addNode('2', null),
-    addNode('1', null),
-    addNode('0', null)
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
   )(EMPTY_GRAPH);
 
 

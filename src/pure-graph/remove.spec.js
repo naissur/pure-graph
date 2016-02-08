@@ -18,8 +18,8 @@ import {compose} from 'ramda';
 
 
 const TEST_GRAPH = compose(
-  addNode('0', {data: 'data'}),
-  addNode('1', {data: 'data'})
+  addNode('0'),
+  addNode('1')
 )(EMPTY_GRAPH);
 
 
@@ -145,9 +145,8 @@ test(`nodes export a 'removeNode' function`, t => {
 
 test(`nodes removeNode: hasNode returns false after node has been removed`, t => {
   const testId = '13';
-  const testData = {a: 1, b: 2};
 
-  const afterAdded = addNode(testId, testData, EMPTY_GRAPH);
+  const afterAdded = addNode(testId, EMPTY_GRAPH);
   t.equal(hasNode(testId, afterAdded), true);
 
   const afterRemoved = removeNode(testId, afterAdded);
@@ -158,8 +157,7 @@ test(`nodes removeNode: hasNode returns false after node has been removed`, t =>
 
 test(`nodes removeNode(x) after addNode(x) returns the same graph`, t => {
   const testId = '13';
-  const testData = {a: 1, b: 2};
-  const afterAdded = addNode(testId, testData, EMPTY_GRAPH);
+  const afterAdded = addNode(testId, EMPTY_GRAPH);
   const afterRemoved = removeNode(testId, afterAdded);
 
   t.deepEqual(afterRemoved, EMPTY_GRAPH);
@@ -184,8 +182,8 @@ test(`nodes removeNode doesn't throw error when the node doesn't exist, and retu
 test(`nodes removeNode() removes the edges originating at and coming from the node`, t => {
   const testGraph = compose(
     addEdge('0-1', '0', '1'),
-    addNode('0', null),
-    addNode('1', null)
+    addNode('0'),
+    addNode('1')
   )(EMPTY_GRAPH);
 
   const afterRemoved = removeNode('0', testGraph);
@@ -199,9 +197,9 @@ test(`nodes removeNode() removes the edges correctly (specific case)`, t => {
   const testGraph = compose(
     addEdge('2-0', '2', '0'),
     addEdge('0-1', '0', '1'),
-    addNode('0', {val: 0}),
-    addNode('1', {val: 1}),
-    addNode('2', {val: 2})
+    addNode('0'),
+    addNode('1'),
+    addNode('2')
   )(EMPTY_GRAPH);
 
 
@@ -210,8 +208,8 @@ test(`nodes removeNode() removes the edges correctly (specific case)`, t => {
 
   const expected = compose(
     addEdge('2-0', '2', '0'),
-    addNode('2', {val: 2}),
-    addNode('0', {val: 0})
+    addNode('2'),
+    addNode('0')
   )(EMPTY_GRAPH);
 
   t.deepEqual(result, expected), 'removes the node correctly';
