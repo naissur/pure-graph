@@ -179,12 +179,15 @@ Gets all of the edges incident to the node with the given id.
 #### `removeNode : NodeId -> GraphData -> GraphData`
 Removes a node with `NodeId` id and **all of the incident edges** from the graph. Returns an unmodified graph if the node hasn't been found.
 
-#### `removeEdgeFromTo : NodeId -> NodeId -> GraphData -> GraphData`
-Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.
-
 #### `removeEdgeWithId : EdgeId -> GraphData -> GraphData`
 Removes the edge with the given id.
 
+#### `removeEdgeFromTo : NodeId -> NodeId -> GraphData -> GraphData`
+Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.
+
+#### `removeEdgesToNode : NodeId -> GraphData -> GraphData`
+#### `removeEdgesFromNode : NodeId -> GraphData -> GraphData`
+#### `removeEdgesIncidentToNode : NodeId -> GraphData -> GraphData`
 
 
 ## Utils
