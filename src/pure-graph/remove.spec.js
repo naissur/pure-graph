@@ -1,6 +1,7 @@
 import {test} from 'tap';
 import {
   removeEdgeWithId, removeEdgeFromTo,
+  removeEdgesToNode, removeEdgesFromNode, removeEdgesIncidentToNode,
   removeNode
 } from './remove';
 
@@ -128,6 +129,102 @@ test(`edges removeEdgeWithId: hasEdgeFromTo & hasEdgeWithId returns false after 
   t.deepEqual(hasEdgeWithId(testEdgeId, added), true);
   t.deepEqual(hasEdgeWithId(testEdgeId, removed), false);
 
+  t.end();
+});
+
+
+
+// removeEdgesToNode
+
+test(`edges export a removeEdgesToNode() function`, t => {
+  t.equals(is.fn(removeEdgesToNode), true);
+  t.end();
+});
+
+test(`edges removeEdgesToNode() removes the edges to the node`, t => {
+  const testGraph = compose(
+    addEdge('2-0', '2', '0'),
+    addEdge('1-0', '1', '0'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const got = removeEdgesToNode('0', testGraph);
+
+
+  const expected = compose(
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+  t.deepEqual(got, expected);
+  t.end();
+});
+
+
+// removeEdgesFromNode
+
+test(`edges export a removeEdgesFromNode() function`, t => {
+  t.equals(is.fn(removeEdgesFromNode), true);
+  t.end();
+});
+
+test(`edges removeEdgesFromNode() removes the edges to the node`, t => {
+  const testGraph = compose(
+    addEdge('0-1', '0', '1'),
+    addEdge('0-2', '0', '2'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const got = removeEdgesFromNode('0', testGraph);
+
+
+  const expected = compose(
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+  t.deepEqual(got, expected);
+  t.end();
+});
+
+
+// removeEdgesIncidentToNode
+
+test(`edges export a removeEdgesIncidentToNode() function`, t => {
+  t.equals(is.fn(removeEdgesIncidentToNode), true);
+  t.end();
+});
+
+test(`edges removeEdgesIncidentToNode() removes the edges to the node`, t => {
+  const testGraph = compose(
+    addEdge('0-1', '0', '1'),
+    addEdge('0-2', '0', '2'),
+    addEdge('1-0', '1', '0'),
+    addEdge('2-0', '2', '0'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const got = removeEdgesIncidentToNode('0', testGraph);
+
+
+  const expected = compose(
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+  t.deepEqual(got, expected);
   t.end();
 });
 

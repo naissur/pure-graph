@@ -2,7 +2,8 @@ import {compose, curry, dissocPath, reduce, prop, map} from 'ramda';
 
 import {
   hasEdgeFromTo, hasEdgeWithId,
-  getEdgeFromTo, getEdgeWithId,
+  getEdgeFromTo, getEdgeWithId, 
+  getEdgesToNode, getEdgesFromNode,
   getEdgesIncidentToNode
 } from './edges'
 
@@ -48,4 +49,29 @@ export const removeNode = curry((nodeId, graph) => {
 
   return removedNode;
 });
+
+
+export const removeEdgesToNode = curry( (nodeId, graph) => (
+  compose(
+    reduce( (result, id) => removeEdgeWithId(id, result), graph ),
+    map(prop('id')),
+    getEdgesToNode(nodeId)
+  )(graph)
+));
+
+
+export const removeEdgesFromNode = curry( (nodeId, graph) => (
+  compose(
+    reduce( (result, id) => removeEdgeWithId(id, result), graph ),
+    map(prop('id')),
+    getEdgesFromNode(nodeId)
+  )(graph)
+));
+
+export const removeEdgesIncidentToNode = curry( (nodeId, graph) => (
+  compose(
+    removeEdgesToNode(nodeId),
+    removeEdgesFromNode(nodeId)
+  )(graph)
+));
 
