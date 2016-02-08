@@ -199,8 +199,8 @@ An empty graph constant.
 
 For cases when it is important to efficiently store and send the graph data, the library provides a utility to convert the graph to the incidence form, removing data duplication.
 
-## convertToIncidentForm: GraphData -> IncidentGraphData
-## convertFromIncidentForm: IncidentGraphData -> GraphData
+#### `convertToIncidentForm: GraphData -> IncidentGraphData`
+#### `convertFromIncidentForm: IncidentGraphData -> GraphData`
 
 #### example:
 
@@ -215,28 +215,32 @@ For cases when it is important to efficiently store and send the graph data, the
 
   console.log(JSON.stringify(graph, null, '  '));
 
-  {
-    "nodes": {
-      "0": { "id": "0", "edgesFrom": { "0-1": true }, "edgesTo": {} },
-      "1": { "id": "1", "edgesFrom": {},              "edgesTo": { "2-1": true, "0-1": true } },
-      "2": { "id": "2", "edgesFrom": { "2-1": true }, "edgesTo": {} }
-    },
-    "edges": {
-      "2-1": { "id": "2-1", "from": "2", "to": "1" },
-      "0-1": { "id": "0-1", "from": "0", "to": "1" }
+  /*
+    {
+      "nodes": {
+        "0": { "id": "0", "edgesFrom": { "0-1": true }, "edgesTo": {} },
+        "1": { "id": "1", "edgesFrom": {},              "edgesTo": { "2-1": true, "0-1": true } },
+        "2": { "id": "2", "edgesFrom": { "2-1": true }, "edgesTo": {} }
+      },
+      "edges": {
+        "2-1": { "id": "2-1", "from": "2", "to": "1" },
+        "0-1": { "id": "0-1", "from": "0", "to": "1" }
+      }
     }
-  }
+  */
 
 
   console.log(JSON.stringify(g.convertToIncidentForm(graph), null, '  '));
 
-  {
-    "nodes": { "0": true, "1": true, "2": true },
-    "edges": {
-      "2-1": { "f": "2", "t": "1" },
-      "0-1": { "f": "0", "t": "1" }
+  /*
+    {
+      "nodes": { "0": true, "1": true, "2": true },
+      "edges": {
+        "2-1": { "f": "2", "t": "1" },
+        "0-1": { "f": "0", "t": "1" }
+      }
     }
-  }
+  */
 
 
 ```
