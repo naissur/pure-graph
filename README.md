@@ -75,27 +75,29 @@ assert.equal(
 
 // data access
 
-assert.deepEqual(g.getNode('0', testGraph).data, {x: 10, y: 20}, 'start node data has been stored');
-assert.deepEqual(g.getNode('1', testGraph).data, {x: 30, y: 40}, 'end node data has been stored');
-
-assert.deepEqual(g.getNodesIds(testGraph), [ '0', '1' ], 'gets an array of nodes ids');
-assert.deepEqual(g.getEdgesIds(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
+assert.deepEqual(g.getEdges(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
 
 assert.deepEqual(g.getEdgesFromNode('0', testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets edges from the node');
 assert.deepEqual(g.getEdgesIncidentToNode('1', testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets edges incident to the node');
 assert.deepEqual(g.getEdges(testGraph), [ {id: '0-1', from: '0', to: '1'} ], 'gets an edges array');
 
+assert.deepEqual(g.removeNode('0', testGraph), _.compose(
+  g.addNode('1')
+)(empty), 'removes the node correctly');
+
 
 // error handling
 
 try {
-  g.getNode('3', testGraph);    
+  g.addEdge('10-20', '10', '20', testGraph);    
 } catch (e) {
-  assert.equal(e.message, 'getNode: no node with the id 3');
+  assert.equal(e.message, 'addEdge: nodes 10 and 20 do not exist');
 }
 
 
-console.log('all good!');
+console.log('all safe and sound!');
+
+
 
 ```
 
@@ -185,11 +187,58 @@ Removes the edge with the given id.
 
 
 
-
-
 ## Utils
 
 #### `EMPTY_GRAPH: GraphData`
 
 An empty graph constant.
+
+
+
+## Conversion
+
+For cases when it is important to efficiently store and send the graph data, the library provides a utility to convert the graph to the incidence form, removing data duplication.
+
+## convertToIncidentForm: GraphData -> IncidentGraphData
+## convertFromIncidentForm: IncidentGraphData -> GraphData
+
+#### example:
+
+```javascript
+  const graph = compose(
+    addEdge('0-1', '0', '1'),
+    addEdge('2-1', '2', '1'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0') 
+  )(EMPTY_GRAPH);
+
+  console.log(JSON.stringify(graph, null, '  '));
+
+  {
+    "nodes": {
+      "0": { "id": "0", "edgesFrom": { "0-1": true }, "edgesTo": {} },
+      "1": { "id": "1", "edgesFrom": {},              "edgesTo": { "2-1": true, "0-1": true } },
+      "2": { "id": "2", "edgesFrom": { "2-1": true }, "edgesTo": {} }
+    },
+    "edges": {
+      "2-1": { "id": "2-1", "from": "2", "to": "1" },
+      "0-1": { "id": "0-1", "from": "0", "to": "1" }
+    }
+  }
+
+
+  console.log(JSON.stringify(g.convertToIncidentForm(graph), null, '  '));
+
+  {
+    "nodes": { "0": true, "1": true, "2": true },
+    "edges": {
+      "2-1": { "f": "2", "t": "1" },
+      "0-1": { "f": "0", "t": "1" }
+    }
+  }
+
+
+```
+
 
