@@ -5,6 +5,8 @@ import {
   getEdgesBetween
 } from '../core';
 
+const MAX_CHECKS = 1000;
+
 export const hasCyclesInConnectedComponent = (startNodeId, graph) => {
   // simple iterative-deepening depth-first search
   
@@ -16,22 +18,35 @@ export const hasCyclesInConnectedComponent = (startNodeId, graph) => {
 
   let lastFringe = fringe;
   let lastVisited = visited;
-  if (!checkCondition(visited, fringe, graph)) return true;
+  if (!checkCycleCondition(visited, fringe, graph)) return true;
 
-  for(let i = 0; i < 10000; i++) {
-    const {nextFringe, nextVisited} = iterate(lastFringe, lastVisited, graph);
+  for(let i = 1; i < MAX_CHECKS; i++) {
+    const {nextFringe, nextVisited} = getNextFringeAndVisited(lastFringe, lastVisited, graph);
 
-    if (!checkCondition(nextVisited, nextFringe, graph)) return true;
+    if (!checkCycleCondition(nextVisited, nextFringe, graph)) return true;
     if (equals(nextFringe, [])) return false;
 
     [lastFringe, lastVisited] = [nextFringe, nextVisited];
   }
   
 
-  return;
+  throw new Error('hasCyclesInConnectedComponent: made more than 1,000 checks');
 }
 
-const checkCondition = (visited, fringe, graph) => {
+const getNextFringeAndVisited = (fringe, visited, graph) => {
+  const prevFringe = map(prop('node'), fringe);
+  const nextVisited = union(visited, prevFringe);
+  const nextFringe = compose(
+    flatten,
+    map(father => 
+      map(node => ({father, node, adjacent: getNodesAdjacentTo(node, graph)}),
+      difference(getNodesAdjacentTo(father, graph), visited)))
+  )(prevFringe);
+
+  return {nextFringe, nextVisited};
+}
+
+const checkCycleCondition = (visited, fringe, graph) => {
   for(let fringeNode of fringe) {
     const {father, node, adjacent} = fringeNode;
 
@@ -45,17 +60,4 @@ const checkCondition = (visited, fringe, graph) => {
   return true;
 };
 
-
-const iterate = (fringe, visited, graph) => {
-  const prevFringe = map(prop('node'), fringe);
-  const nextVisited = union(visited, prevFringe);
-  const nextFringe = compose(
-    flatten,
-    map(father => 
-      map(node => ({father, node, adjacent: getNodesAdjacentTo(node, graph)}),
-      difference(getNodesAdjacentTo(father, graph), visited)))
-  )(prevFringe);
-
-  return {nextFringe, nextVisited};
-}
 

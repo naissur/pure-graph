@@ -107,7 +107,7 @@ test('hasCyclesInConnectedComponent handles a one-noded graph', t => {
 
 
 test('hasCyclesInConnectedComponent handles a large tree', t => {
-  const N = 10;
+  const N = 100;
   const ids = zip(
     map(String, range(0, N)),
     map(String, range(1, N + 1)));
@@ -120,7 +120,7 @@ test('hasCyclesInConnectedComponent handles a large tree', t => {
       )(graph)
   )(addNode('0', EMPTY_GRAPH), ids);
 
-  t.equal(hasCyclesInConnectedComponent('0', testTree), false, 'returns false if started from 0');
+  t.equal(hasCyclesInConnectedComponent('50', testTree), false, 'returns false if started from 0');
   t.end();
 });
 
@@ -139,7 +139,32 @@ test('hasCyclesInConnectedComponent handles a large cyclic graph', t => {
     )(addNode('0', EMPTY_GRAPH))
   )(ids);
 
-  t.equal(hasCyclesInConnectedComponent('0', testCyclic), true, 'returns true if started from 0');
+  t.equal(hasCyclesInConnectedComponent('50', testCyclic), true, 'returns true if started from 0');
+  t.end();
+});
+
+test('hasCyclesInConnectedComponent throws an error if the number of checks is over 1,000', t => {
+  const N = 1000;
+  const ids = zip(
+    map(String, range(0, N)),
+    map(String, range(1, N + 1)));
+
+  const testTree = reduce(
+    (graph, [id1, id2]) => 
+      compose(
+        addEdge(`${id1}__${id2}`, id1, id2),
+        addNode(id2)
+      )(graph)
+  )(addNode('0', EMPTY_GRAPH), ids);
+
+
+  try {
+    hasCyclesInConnectedComponent('0', testTree);
+    t.fail('expected to throw');
+  } catch(e) {
+    t.assert(e.message, 'hasCyclesInConnectedComponent: made more than 1,000 checks');
+    t.pass();
+  }
   t.end();
 });
 
