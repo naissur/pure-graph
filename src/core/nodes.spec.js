@@ -1,6 +1,6 @@
 import {test} from 'tap';
 import {
-  addNode, getNodesIds, hasNode
+  addNode, getNodes, hasNode
 } from './nodes';
 
 import {EMPTY_GRAPH} from './empty';
@@ -74,17 +74,17 @@ test(`nodes hasNode returns true after a node has been added`, t => {
 // ==================== //
 
 
-test(`nodes export an 'getNodesIds' function`, t => {
-  t.equal(is.fn(getNodesIds), true);
+test(`nodes export an 'getNodes' function`, t => {
+  t.equal(is.fn(getNodes), true);
   t.end();
 });
 
-test(`nodes getNodesIds on an empty graph returns []`, t => {
-  t.deepEqual(getNodesIds(EMPTY_GRAPH), [], 'ok');
+test(`nodes getNodes on an empty graph returns []`, t => {
+  t.deepEqual(getNodes(EMPTY_GRAPH), [], 'ok');
   t.end();
 });
 
-test(`nodes getNodesIds gets the nodes ids`, t => {
+test(`nodes getNodes gets the nodes ids`, t => {
   const testData = [
     'test1', 'test 2', 'test_id'
   ];
@@ -96,7 +96,7 @@ test(`nodes getNodesIds gets the nodes ids`, t => {
   )(EMPTY_GRAPH);
 
 
-  const result = getNodesIds(testGraph);
+  const result = getNodes(testGraph);
 
 
   t.deepEqual(result, testData.reverse());

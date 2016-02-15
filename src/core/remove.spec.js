@@ -1,12 +1,12 @@
 import {test} from 'tap';
 import {
-  removeEdgeWithId, removeEdgeFromTo,
-  removeEdgesToNode, removeEdgesFromNode, removeEdgesIncidentToNode,
+  removeEdgeWithId, removeEdgesFromTo,
+  removeEdgesToNode, removeEdgesFromNode, removeEdgesIncidentToNode, removeEdgesBetweenNodes,
   removeNode
 } from './remove';
 
 import {
-  addEdge, hasEdgeFromTo, hasEdgeWithId
+  addEdge, hasEdgesFromTo, hasEdgeWithId
 } from './edges'
 
 import {
@@ -29,15 +29,15 @@ const TEST_GRAPH = compose(
 // =    remove edge    = //
 // ===================== //
 
-test(`edges export a removeEdgeFromTo() function`, t => {
-  t.equals(is.fn(removeEdgeFromTo), true);
+test(`edges export a removeEdgesFromTo() function`, t => {
+  t.equals(is.fn(removeEdgesFromTo), true);
   t.end();
 });
 
 
-test(`edges removeEdgeFromTo doesn't throw error when the edge doesn't exist, and returns the same graph`, t => {
+test(`edges removeEdgesFromTo doesn't throw error when the edge doesn't exist, and returns the same graph`, t => {
   try {
-    const removed = removeEdgeFromTo('0', '1', EMPTY_GRAPH);
+    const removed = removeEdgesFromTo('0', '1', EMPTY_GRAPH);
     t.deepEqual(removed, EMPTY_GRAPH, 'ok');
   } catch (e) {
     t.fail(`expected not to throw, thrown with '${ e.message }'`);
@@ -47,13 +47,13 @@ test(`edges removeEdgeFromTo doesn't throw error when the edge doesn't exist, an
 });
 
 
-test(`edges removeEdgeFromTo: composition of 'addEdge' and 'removeEdgeFromTo' doesn't change the graph`, t => {
+test(`edges removeEdgesFromTo: composition of 'addEdge' and 'removeEdgesFromTo' doesn't change the graph`, t => {
   const startId = '0';
   const endId = '1';
   const testEdgeId = '0-1';
 
   const result = compose(
-    removeEdgeFromTo(startId, endId),
+    removeEdgesFromTo(startId, endId),
     addEdge(testEdgeId, startId, endId)
   )(TEST_GRAPH);
 
@@ -63,16 +63,16 @@ test(`edges removeEdgeFromTo: composition of 'addEdge' and 'removeEdgeFromTo' do
 });
 
 
-test(`edges removeEdgeFromTo: hasEdgeFromTo & hasEdgeWithId returns false after removeEdgeFromTo has been invoked`, t => {
+test(`edges removeEdgesFromTo: hasEdgesFromTo & hasEdgeWithId returns false after removeEdgesFromTo has been invoked`, t => {
   const startId = '0';
   const endId = '1';
   const testEdgeId = '0-1';
 
   const added = addEdge(testEdgeId, startId, endId, TEST_GRAPH);
-  const removed = removeEdgeFromTo(startId, endId, added);
+  const removed = removeEdgesFromTo(startId, endId, added);
 
-  t.deepEqual(hasEdgeFromTo(startId, endId, added), true);
-  t.deepEqual(hasEdgeFromTo(startId, endId, removed), false);
+  t.deepEqual(hasEdgesFromTo(startId, endId, added), true);
+  t.deepEqual(hasEdgesFromTo(startId, endId, removed), false);
 
   t.deepEqual(hasEdgeWithId(testEdgeId, added), true);
   t.deepEqual(hasEdgeWithId(testEdgeId, removed), false);
@@ -115,7 +115,7 @@ test(`edges removeEdgeWithId: composition of 'addEdge' and 'removeEdgeWithId' do
 });
 
 
-test(`edges removeEdgeWithId: hasEdgeFromTo & hasEdgeWithId returns false after removeEdgeWithId has been invoked`, t => {
+test(`edges removeEdgeWithId: hasEdgesFromTo & hasEdgeWithId returns false after removeEdgeWithId has been invoked`, t => {
   const startId = '0';
   const endId = '1';
   const testEdgeId = '0-1';
@@ -123,8 +123,8 @@ test(`edges removeEdgeWithId: hasEdgeFromTo & hasEdgeWithId returns false after 
   const added = addEdge(testEdgeId, startId, endId, TEST_GRAPH);
   const removed = removeEdgeWithId(testEdgeId, added);
 
-  t.deepEqual(hasEdgeFromTo(startId, endId, added), true);
-  t.deepEqual(hasEdgeFromTo(startId, endId, removed), false);
+  t.deepEqual(hasEdgesFromTo(startId, endId, added), true);
+  t.deepEqual(hasEdgesFromTo(startId, endId, removed), false);
 
   t.deepEqual(hasEdgeWithId(testEdgeId, added), true);
   t.deepEqual(hasEdgeWithId(testEdgeId, removed), false);
@@ -227,6 +227,36 @@ test(`edges removeEdgesIncidentToNode() removes the edges to the node`, t => {
   t.deepEqual(got, expected);
   t.end();
 });
+
+// removeEdgesBetweenNodes
+
+test(`edges export a removeEdgesBetweenNodes() function`, t => {
+  t.equals(is.fn(removeEdgesBetweenNodes), true);
+  t.end();
+});
+
+test(`edges removeEdgesBetweenNodes() removes the edges between nodes`, t => {
+  const testGraph = compose(
+    addEdge('1-0', '1', '0'),
+    addEdge('0-1', '0', '1'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const got = removeEdgesBetweenNodes('0', '1', testGraph);
+
+
+  const expected = compose(
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+  t.deepEqual(got, expected);
+  t.end();
+});
+
+
 
 
 

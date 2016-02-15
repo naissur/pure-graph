@@ -1,9 +1,10 @@
 import {test} from 'tap';
 import {
   addEdge, getEdges, 
-  hasEdgeFromTo, hasEdgeWithId, 
-  getEdgeFromTo, getEdgeWithId, 
-  getEdgesFromNode, getEdgesToNode, getEdgesIncidentToNode
+  hasEdgesFromTo, hasEdgesBetween, hasEdgeWithId, 
+  getEdgesFromTo, getEdgesBetween, getEdgeWithId, 
+  getEdgesFromNode, getEdgesToNode, getEdgesIncidentToNode,
+  getNodesAdjacentTo
 } from './edges';
 
 import {addNode} from './nodes';
@@ -87,28 +88,9 @@ test(`edges addEdge fails with correct error if the end node does not exist`, t 
 // =     has edge     = //
 // ==================== //
 
-test(`edges export a hasEdgeFromTo function`, t => {
-  t.equal(is.fn(hasEdgeFromTo), true);
-  t.end();
-});
-
-test(`edges hasEdgeFromTo returns false on empty graph`, t => {
-  const result = hasEdgeFromTo('0', '1', EMPTY_GRAPH);
-
-  t.equal(result, false);
-  t.end();
-});
-
-
-test(`edges hasEdgeFromTo returns true after the edge has been added`, t => {
-  const added = addEdge('0-1', '0', '1', TEST_GRAPH);
-
-  const result = hasEdgeFromTo('0', '1', added);
-
-  t.equal(result, true);
-  t.end();
-});
-
+/*
+    with id
+*/
 
 
 test(`edges export a hasEdgeWithId function`, t => {
@@ -132,6 +114,75 @@ test(`edges hasEdgeWithId returns true after the edge has been added`, t => {
   const result = hasEdgeWithId(testEdgeId, added);
 
   t.equal(result, true);
+  t.end();
+});
+
+
+
+/*
+    from to
+*/
+
+test(`edges export a hasEdgesFromTo function`, t => {
+  t.equal(is.fn(hasEdgesFromTo), true);
+  t.end();
+});
+
+test(`edges hasEdgesFromTo returns false on empty graph`, t => {
+  const result = hasEdgesFromTo('0', '1', EMPTY_GRAPH);
+
+  t.equal(result, false);
+  t.end();
+});
+
+
+test(`edges hasEdgesFromTo returns true after the edge has been added`, t => {
+  const added = addEdge('0-1', '0', '1', TEST_GRAPH);
+
+  const result = hasEdgesFromTo('0', '1', added);
+
+  t.equal(result, true);
+  t.end();
+});
+
+
+/*
+    between
+*/
+
+
+test(`edges export a hasEdgesBetween function`, t => {
+  t.equal(is.fn(hasEdgesBetween), true);
+  t.end();
+});
+
+test(`edges hasEdgesBetween returns false on empty graph`, t => {
+  const result = hasEdgesBetween('0', '1', EMPTY_GRAPH);
+
+  t.equal(result, false);
+  t.end();
+});
+
+
+test(`edges hasEdgesBetween returns true after the edges has been added`, t => {
+  const added = addEdge('0-1', '0', '1', TEST_GRAPH);
+
+  const result = hasEdgesBetween('1', '0', added);
+
+  t.equal(result, true);
+  t.end();
+});
+
+
+test(`edges hasEdgesBetween returns true after the edges has been added (multiple case)`, t => {
+  const added = compose(
+    addEdge('0-1', '0', '1'),
+    addEdge('1-0', '1', '0')
+  )(TEST_GRAPH);
+
+  t.assert(hasEdgesBetween('0', '1', added));
+  t.assert(hasEdgesBetween('1', '0', added));
+
   t.end();
 });
 
@@ -181,28 +232,52 @@ test(`edges getEdges gets the edges from the graph`, t => {
 // =     get edge     = //
 // ==================== //
 
-test(`edges export a getEdgeFromTo function`, t => {
-  t.equal(is.fn(getEdgeFromTo), true);
+test(`edges export a getEdgesFromTo function`, t => {
+  t.equal(is.fn(getEdgesFromTo), true);
   t.end();
 });
 
-test(`edges getEdgeFromTo throws a correct error if the edge hasn't been found`, t => {
+test(`edges getEdgesFromTo returns [] if no edges have been found`, t => {
+  const result = getEdgesFromTo('2', '1', TEST_GRAPH_EDGED);
+
+  t.deepEqual(result, []);
+
+  t.end();
+});
+
+
+test(`edges getEdgesFromTo returns correct edges if they have been found`, t => {
+
+  const edge = getEdgesFromTo('0', '1', TEST_GRAPH_EDGED);
+  t.deepEqual(edge, [{ id: '0-1', from: '0', to: '1' }]);
+
+  t.end();
+});
+
+
+
+test(`edges export a getEdgesBetween function`, t => {
+  t.equal(is.fn(getEdgesBetween), true);
+  t.end();
+});
+
+test(`edges getEdgesBetween throws a correct error if the edge hasn't been found`, t => {
 
   try {
-    getEdgeFromTo('2', '1', TEST_GRAPH_EDGED);
+    getEdgesBetween('2', '1', TEST_GRAPH_EDGED);
     t.fail('expected to throw');
   } catch (e) {
-    t.equal(e.message, `getEdgeFromTo: edge from "2" to "1" doesn't exist`);
+    t.equal(e.message, `getEdgesBetween: no edges from "2" to "1"`);
   }
 
   t.end();
 });
 
 
-test(`edges getEdgeFromTo returns a correct edge if it has been found`, t => {
-
-  const edge = getEdgeFromTo('0', '1', TEST_GRAPH_EDGED);
-  t.deepEqual(edge, { id: '0-1', from: '0', to: '1' });
+test(`edges getEdgesBetween returns correct edges if they have been found`, t => {
+  const edge = getEdgesBetween('1', '0', TEST_GRAPH_EDGED);
+  
+  t.deepEqual(edge, [{ id: '0-1', from: '0', to: '1' }]);
 
   t.end();
 });
@@ -367,7 +442,7 @@ test(`edges getEdgesIncidentToNode throws an error if the node doesn't exist wit
 });
 
 
-test(`edges getEdgesIncidentToNode returns the edges adjacent to the node`, t => {
+test(`edges getEdgesIncidentToNode returns the edges incident to the node`, t => {
   const testGraph = compose(
     addEdge('0-1', '0', '1'),
     addEdge('0-2', '0', '2'),
@@ -392,4 +467,64 @@ test(`edges getEdgesIncidentToNode returns the edges adjacent to the node`, t =>
 });
 
 
+
+// nodes
+
+
+test(`edges export an 'getNodesAdjacentTo' function`, t => {
+  t.equal(is.fn(getNodesAdjacentTo), true);
+  t.end();
+});
+
+
+test(`edges getNodesAdjacentTo throws an error if the node doesn't exist with the correct message`, t => {
+  const testGraph = EMPTY_GRAPH;
+  const testId = '0';
+
+
+  try {
+    getNodesAdjacentTo(testId, testGraph);
+    t.fail('expected to fail');
+  } catch(e) {
+    t.equal(e.message, `getNodesAdjacentTo: no node with the id ${testId}`);
+  }
+
+
+  t.end();
+});
+
+
+test(`edges getNodesAdjacentTo returns [] if there are no adjacent nodes`, t => {
+  const testGraph = compose(
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const result = getNodesAdjacentTo('0', testGraph);
+
+
+  t.deepEqual(result, [ ]);
+  t.end();
+});
+
+test(`edges getNodesAdjacentTo returns the nodes adjacent to the node`, t => {
+  const testGraph = compose(
+    addEdge('0-1', '0', '1'),
+    addEdge('0-2', '0', '2'),
+    addEdge('1-0', '1', '0'),
+    addEdge('2-0', '2', '0'),
+    addNode('2'),
+    addNode('1'),
+    addNode('0')
+  )(EMPTY_GRAPH);
+
+
+  const result = getNodesAdjacentTo('0', testGraph);
+
+
+  t.deepEqual(result, [ '2', '1' ]);
+  t.end();
+});
 

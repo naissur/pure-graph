@@ -13,6 +13,6 @@ export const hasNode = curry( (nodeId, graph) => {
   return !!path(['nodes', nodeId], graph);
 });
 
-export const getNodesIds = compose(keys, prop('nodes'));
+export const getNodes = compose(keys, prop('nodes'));
 
 

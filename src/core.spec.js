@@ -1,7 +1,7 @@
 import {test} from 'tap';
 import {
   addNode, removeNode, hasNode, 
-  addEdge, getEdges, hasEdgeWithId, hasEdgeFromTo, removeEdgeWithId, removeEdgeFromTo, 
+  addEdge, getEdges, hasEdgeWithId, hasEdgesFromTo, removeEdgeWithId, removeEdgesFromTo, 
   EMPTY_GRAPH
 } from './index.js';
 
@@ -27,7 +27,7 @@ test('adding nodes and edges', t => {
     hasNode(startId),
     hasNode(endId),
     hasEdgeWithId(testEdgeId),
-    hasEdgeFromTo(startId, endId)
+    hasEdgesFromTo(startId, endId)
   ].map(fn => fn(addedEdge));
 
   // check existance
@@ -52,7 +52,7 @@ test('removing nodes and edges from to', t => {
   )(EMPTY_GRAPH);
 
   const removed = compose(
-    removeEdgeFromTo('0', '1'),
+    removeEdgesFromTo('0', '1'),
     removeNode('1'),
     removeNode('0')
   )(added);
@@ -60,7 +60,7 @@ test('removing nodes and edges from to', t => {
   const [hasStart, hasEnd, hasEdgeAdded] = [
     hasNode('0'),
     hasNode('1'),
-    hasEdgeFromTo('0', '1')
+    hasEdgesFromTo('0', '1')
   ].map(fn => fn(removed));
 
   t.equal(hasStart, false, 'removed start node');
@@ -85,7 +85,7 @@ test('removing nodes', t => {
   const [hasStart, hasEnd, hasEdgeAdded] = [
     hasNode('0'),
     hasNode('1'),
-    hasEdgeFromTo('0', '1')
+    hasEdgesFromTo('0', '1')
   ].map(fn => fn(removed));
 
   t.equal(hasStart, false, 'removed start node');
@@ -104,11 +104,11 @@ test('removing edges by id', t => {
 
 
   const removedWithId = removeEdgeWithId('0-1', added);
-  const removedFromTo = removeEdgeFromTo('0', '1', added);
+  const removedFromTo = removeEdgesFromTo('0', '1', added);
 
 
-  t.equal(hasEdgeFromTo('0', '1', removedWithId), false, 'removed edge');
-  t.equal(hasEdgeFromTo('0', '1', removedFromTo), false, 'removed edge');
+  t.equal(hasEdgesFromTo('0', '1', removedWithId), false, 'removed edge');
+  t.equal(hasEdgesFromTo('0', '1', removedFromTo), false, 'removed edge');
   t.end();
 });
 

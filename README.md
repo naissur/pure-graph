@@ -42,8 +42,8 @@ const testGraph = _.compose(        // add nodes with '0' and '1' id's, and an e
 assert(g.hasNode('0', testGraph), `has a node with id '0'`);
 assert(g.hasNode('1', testGraph), `has a node with id '1'`);
 
-assert(g.hasEdgeFromTo('0', '1', testGraph), `has an edge from '0' to '1'`);
-assert.equal(g.hasEdgeFromTo('0', '2', testGraph), false, `doesn't have an edge from '0' to '2'`);
+assert(g.hasEdgesFromTo('0', '1', testGraph), `has an edge from '0' to '1'`);
+assert.equal(g.hasEdgesFromTo('0', '2', testGraph), false, `doesn't have an edge from '0' to '2'`);
 
 assert(g.hasEdgeWithId('0-1', testGraph), `has an edge with id '0-1'`);
 assert.equal(g.hasEdgeWithId('0-2', testGraph), false, `doesn't have an edge with id '0-2'`);
@@ -53,7 +53,7 @@ assert.equal(g.hasEdgeWithId('0-2', testGraph), false, `doesn't have an edge wit
 
 assert.equal(
   _.compose(
-    g.hasEdgeFromTo('0', '1'),
+    g.hasEdgesFromTo('0', '1'),
     g.removeEdgeWithId('0-1')
   )(testGraph), false, 'removes the edge between nodes'
 );
@@ -67,7 +67,7 @@ assert.equal(
 
 assert.equal(
   _.compose(
-    g.hasEdgeFromTo('0', '1'),
+    g.hasEdgesFromTo('0', '1'),
     g.removeNode('0')
   )(testGraph), false, 'removes the edge after removing one of adjacent nodes'
 );
@@ -144,7 +144,9 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 
 #### `hasNode : NodeId -> GraphData -> Boolean`
 
-#### `hasEdgeFromTo : NodeId -> NodeId -> GraphData -> Boolean`
+#### `hasEdgesFromTo : NodeId -> NodeId -> GraphData -> Boolean`
+
+#### `hasEdgesBetween : NodeId -> NodeId -> GraphData -> Boolean`
 
 #### `hasEdgeWithId : EdgeId -> GraphData -> Boolean`
 
@@ -152,16 +154,19 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 
 ## Retrieving
 
-#### `getEdgeFromTo : NodeId -> NodeId -> GraphData -> {id: EdgeId, from: NodeId, to: NodeId}`
+#### `getNodes: GraphData -> [ NodeId ]`
+#### `getNodesAdjacentTo : GraphData -> [ NodeId ]`
+
+#### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
 #### `getEdgeWithId : EdgeId -> GraphData -> {id: EdgeId, from: NodeId, to: NodeId}`
 
-**note**: all of the getters above throw an error if the item has not been found.
+**note**: `getEdgeWithId`throws an error if the edge has not been found.
 
+#### `getEdgesFromTo : NodeId -> NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
-#### `getNodesIds : GraphData -> [ NodeId ]`
+#### `getEdgesBetween : NodeId -> NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
-#### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
 #### `getEdgesFromNode: NodeId -> GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 Gets the edges incident to the node with the given id, directed **from** the node.
@@ -182,8 +187,9 @@ Removes a node with `NodeId` id and **all of the incident edges** from the graph
 #### `removeEdgeWithId : EdgeId -> GraphData -> GraphData`
 Removes the edge with the given id.
 
-#### `removeEdgeFromTo : NodeId -> NodeId -> GraphData -> GraphData`
-Removes the edge between nodes with the given id's. If any of the nodes has not been found, throws an error.
+#### `removeEdgesFromTo : NodeId -> NodeId -> GraphData -> GraphData`
+
+#### `removeEdgesBetween : NodeId -> NodeId -> GraphData -> GraphData`
 
 #### `removeEdgesToNode : NodeId -> GraphData -> GraphData`
 #### `removeEdgesFromNode : NodeId -> GraphData -> GraphData`
