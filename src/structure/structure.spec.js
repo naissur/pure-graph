@@ -8,7 +8,7 @@ import {
 
 import {
   hasCyclesInConnectedComponent
-} from '.';
+} from './structure';
 
 
 test('structure exports a hasCyclesInConnectedComponent function', t => {
