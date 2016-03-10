@@ -89,8 +89,8 @@ test('subgraph getNodesOfSubgraphFrom exists', t => {
 
 test('subgraph getNodesOfSubgraphFrom gets the nodes of subgraph of a simple graph', t => {
   const testGraph = compose(
-    addEdge('0-1', '0', '1'),
-    addEdge('1-2', '1', '2'),
+    addEdge('1-0', '1', '0'),
+    addEdge('2-1', '2', '1'),
     addNode('2'),
     addNode('1'),
     addNode('0')
@@ -99,7 +99,7 @@ test('subgraph getNodesOfSubgraphFrom gets the nodes of subgraph of a simple gra
   const testNodeId = '1';
   const expected = ['1', '0'];
 
-  const result = getNodesOfSubgraphFrom (testNodeId, testGraph);
+  const result = getNodesOfSubgraphFrom(testNodeId, testGraph);
 
   t.deepEqual(difference(result, expected), [])
   t.end();
@@ -108,9 +108,9 @@ test('subgraph getNodesOfSubgraphFrom gets the nodes of subgraph of a simple gra
 
 test('subgraph getNodesOfSubgraphFrom gets the nodes of subgraph of a complex graph', t => {
   const testGraph = compose(
-    addEdge('0-1', '0', '1'),
-    addEdge('2-1', '2', '1'),
-    addEdge('3-2', '3', '2'),
+    addEdge('1-0', '1', '0'),
+    addEdge('1-2', '1', '2'),
+    addEdge('2-3', '2', '3'),
     addNode('3'),
     addNode('2'),
     addNode('1'),

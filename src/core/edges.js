@@ -133,9 +133,9 @@ export const getNodesTo = curry((nodeId, graph) => {
 export const getNodesFrom = curry((nodeId, graph) => {
   if (!hasNode(nodeId, graph)) throw new Error(`getNodesFrom: no node with the id ${nodeId}`);
 
-  const edgesTo = getEdgesToNode(nodeId, graph);
-  const nodesTo = edgesTo.map( ({from}) => from);
+  const edgesFrom = getEdgesFromNode(nodeId, graph);
+  const nodesFrom = edgesFrom.map( ({to}) => to);
 
-  return nodesTo;
+  return nodesFrom;
 });
 

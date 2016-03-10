@@ -630,10 +630,10 @@ test(`edges getNodesFrom returns [] if there are no nodes to`, t => {
 
 test(`edges getNodesFrom returns the nodes adjacent to the node`, t => {
   const testGraph = compose(
-    addEdge('0-1', '0', '1'),
-    addEdge('0-2', '0', '2'),
     addEdge('1-0', '1', '0'),
     addEdge('2-0', '2', '0'),
+    addEdge('0-1', '0', '1'),
+    addEdge('0-2', '0', '2'),
     addNode('2'),
     addNode('1'),
     addNode('0')
