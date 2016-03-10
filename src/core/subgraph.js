@@ -10,8 +10,6 @@ export const getSubgraphTo = (nodeId, graph) => {
   const subgraphNodes = getSubgraphToNodes(nodeId, graph);
   const subgraphEdges = getSubgraphToEdges(nodeId, graph);
 
-  console.log(subgraphNodes, subgraphEdges);
-
   const addedNodes = reduce((total, id) => addNode(id, total), EMPTY_GRAPH, subgraphNodes);
   const addedEdges = reduce( (total, { from, to, id } ) => addEdge(id, from, to, total), addedNodes, subgraphEdges);
 
@@ -30,9 +28,12 @@ export const getNodesOfSubgraphTo = (nodeId, graph) => {
 const iterateSubGraphToNodes = (nodesFringe, graph) => {
   const nextFringe = nextSubGraphToNodes(nodesFringe, graph);
 
-  if (equals(difference(nextFringe, nodesFringe)), []) return nextFringe;
+  if (
+    equals(difference(nextFringe, nodesFringe), []) &&
+    equals(difference(nodesFringe, nextFringe), [])
+  ) return union(nodesFringe, nextFringe);
 
-  return union(nextFringe, iterateSubGraphToNodes(nextFringe, graph));
+  return union(nodesFringe, iterateSubGraphToNodes(nextFringe, graph));
 };
 
 const nextSubGraphToNodes = (nodesFringe, graph) => (
@@ -60,10 +61,14 @@ export const getNodesOfSubgraphFrom = (nodeId, graph) => {
 const iterateSubGraphFromNodes = (nodesFringe, graph) => {
   const nextFringe = nextSubGraphFromNodes(nodesFringe, graph);
 
-  if (equals(difference(nextFringe, nodesFringe)), []) return nextFringe;
+  if (
+    equals(difference(nextFringe, nodesFringe), []) &&
+    equals(difference(nodesFringe, nextFringe), [])
+  ) return union(nodesFringe, nextFringe);
 
-  return union(nextFringe, iterateSubGraphFromNodes(nextFringe, graph));
+  return union(nodesFringe, iterateSubGraphFromNodes(nextFringe, graph));
 };
+
 
 const nextSubGraphFromNodes = (nodesFringe, graph) => (
   compose(
