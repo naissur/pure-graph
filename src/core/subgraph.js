@@ -1,7 +1,8 @@
 import { equals, compose, map, flatten, union, difference } from 'ramda';
 
 import {
-  getNodesTo
+  getNodesTo,
+  getNodesFrom
 } from './edges'
 
 /*
@@ -47,4 +48,27 @@ const nextSubGraphToNodes = (nodesFringe, graph) => (
   const transduce = (iterator, graph, initial) => {
   };
 */
+
+
+export const getNodesOfSubgraphFrom = (nodeId, graph) => {
+  const result = iterateSubGraphFromNodes([nodeId], graph);
+
+  return result;
+};
+
+
+const iterateSubGraphFromNodes = (nodesFringe, graph) => {
+  const nextFringe = nextSubGraphFromNodes(nodesFringe, graph);
+
+  if (equals(difference(nextFringe, nodesFringe)), []) return nextFringe;
+
+  return union(nextFringe, iterateSubGraphFromNodes(nextFringe, graph));
+};
+
+const nextSubGraphFromNodes = (nodesFringe, graph) => (
+  compose(
+    flatten,
+    map(node => getNodesFrom(node, graph))
+  )(nodesFringe)
+);
 
