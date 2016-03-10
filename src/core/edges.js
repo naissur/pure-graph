@@ -121,5 +121,21 @@ export const getNodesAdjacentTo = curry((nodeId, graph) => {
   return allIncident;
 });
 
+export const getNodesTo = curry((nodeId, graph) => {
+  if (!hasNode(nodeId, graph)) throw new Error(`getNodesTo: no node with the id ${nodeId}`);
 
+  const edgesTo = getEdgesToNode(nodeId, graph);
+  const nodesTo = edgesTo.map( ({from}) => from);
+
+  return nodesTo;
+});
+
+export const getNodesFrom = curry((nodeId, graph) => {
+  if (!hasNode(nodeId, graph)) throw new Error(`getNodesFrom: no node with the id ${nodeId}`);
+
+  const edgesTo = getEdgesToNode(nodeId, graph);
+  const nodesTo = edgesTo.map( ({from}) => from);
+
+  return nodesTo;
+});
 

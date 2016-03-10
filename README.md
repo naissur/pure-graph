@@ -155,7 +155,9 @@ Adds an edge between nodes with the given id's. If one of the nodes has not been
 ## Retrieving
 
 #### `getNodes: GraphData -> [ NodeId ]`
-#### `getNodesAdjacentTo : GraphData -> [ NodeId ]`
+#### `getNodesAdjacentTo : NodeId -> GraphData -> [ NodeId ]`
+#### `getNodesTo : NodeId -> GraphData -> [ NodeId ]`
+#### `getNodesFrom : NodeId -> GraphData -> [ NodeId ]`
 
 #### `getEdges : GraphData -> [ {id: EdgeId, from: NodeId, to: NodeId} ]`
 
